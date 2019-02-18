@@ -11,15 +11,22 @@
   </head>
   <body>
     <div id="background_div"></div>
+
     <form id="center_form" action="{% url 'kf_main:deck_search' %}" method="POST">
       {% csrf_token %}
-      <input
-        id="deck_search"
-        type="text"
-        name="search_string"
-        placeholder="Enter a deck name"
-      />
-      <button id="deck_search_btn" type="submit">⌕ </button>
+      <div id="search_bar_div">
+        <input
+          id="deck_search"
+          type="text"
+          name="search_string"
+          placeholder="Enter a deck name"
+        />
+        <button id="deck_search_btn" type="submit">⌕</button>
+      </div>
+
+      {% if message %}
+      <div>{{ message }}</div>
+      {% endif %}
     </form>
   </body>
 </html>

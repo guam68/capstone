@@ -6,6 +6,12 @@
     <title>Deck Detail</title>
 </head>
 <body>
-    test: {{ test }}
+    Deck: {{ deck.name }}
+    id: {{ deck.id }}
+    {{ power_list }}
+    {{ type_nums }}
+    {% for card in deck_card_list %}
+    <p>{{ card }}</p>
+    {% endfor %}
 </body>
 </html>
