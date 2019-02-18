@@ -1,0 +1,25 @@
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Index</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'kf_main/style.css' %}" />
+  </head>
+  <body>
+    <div id="background_div"></div>
+    <form id="center_form" action="{% url 'kf_main:deck_search' %}" method="POST">
+      {% csrf_token %}
+      <input
+        id="deck_search"
+        type="text"
+        name="search_string"
+        placeholder="Enter a deck name"
+      />
+      <button id="deck_search_btn" type="submit">⌕ </button>
+    </form>
+  </body>
+</html>
