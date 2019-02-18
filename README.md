@@ -50,15 +50,12 @@ Once on the deck detail page, the user will be presented with the information an
     - wins: integer
     - losses: integer
     - id: text (primary key)
-
 - **deck_card**
     - deck_id: text (foreign key: deck)  
     - card_id: text (foreign key: card)
-
 - **deck_house**
     - deck_id: text (foreign key: deck)
     - house: text
-
 - **card**
     - id: text (primary key)
     - card_title: text
@@ -86,22 +83,25 @@ Once on the deck detail page, the user will be presented with the information an
 - [ ] Get raw data to detail page
 
 ### Week 2
+
 - [ ] Bar graphs for all data
 - [ ] Basic force-directed graph (fdg) for similar deck comp visual
 
 ### Week 3
+
 - [ ] Interaction and information for fdg nodes
 - [ ] Make site look less ugly
 
 ### Post Class
+
 - [ ] Auto data collection
 - [ ] Better search + filters
 - [ ] More prettier
 - [ ] Deploy site
-
+_________________________
 - [ ] Web scraper for SAS, AERC, and ADHD ratings
 - [ ] API for others to access everything
-
+_________________________
 - [ ] User login system
 - [ ] User profile page
 - [ ] User saved decks
