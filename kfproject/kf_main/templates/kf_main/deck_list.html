@@ -6,6 +6,10 @@
     <title>Deck List</title>
   </head>
   <body>
-    ok
+    {% for deck in deck_list %}
+    <form action="{% url 'kf_main:deck_detail' deck_id=deck.id %}">
+      <button type="submit">{{ deck.name }}</button>
+    </form>
+    {% endfor %}
   </body>
 </html>
