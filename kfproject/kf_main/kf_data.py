@@ -5,7 +5,7 @@ import time
 from time import sleep
 import datetime
 import ast
-import credentials as cred
+# import credentials as cred
 from psycopg2 import connect
 import sys
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
@@ -164,36 +164,35 @@ def add_deck(deck, con):
 
 def add_deck_houses(deck_id, house_list, con):
     cur = con.cursor()
+    cur.execute('select count(*) as house_count from deck_house where deck_id=%s', (deck_id,))
+    count = int(cur.fetchall()[0][0])
 
     for house in house_list:
-        cur.execute('select count(*) as house_count from deck_house where deck_id=%s', (deck_id,))
-        count = int(cur.fetchall()[0][0])
-
         if count < 3:
             sql = """
                 insert into deck_house
                 values(%s,%s);       
             """
             cur.execute(sql, (deck_id, house))
+            count+=1
 
     cur.close() 
     
 
 def add_deck_cards(deck_id, deck_card_list, con):
     cur = con.cursor()
+    cur.execute('select count(*) as card_count from deck_card where deck_id=%s', (deck_id,))
+    count = int(cur.fetchall()[0][0])
     
     for card in deck_card_list:
-        cur.execute('select count(*) as card_count from deck_card where deck_id=%s', (deck_id,))
-        count = int(cur.fetchall()[0][0])
-
         if count < 36:
             sql = """
                 insert into deck_card
                 values(%s, %s);       
             """
-       
             add_list = [deck_id] + [card]
             cur.execute(sql, (add_list))
+            count +=1
     
     cur.close()
 
@@ -221,7 +220,3 @@ def get_specific_deck(deck_id):
     
     return (deck, deck_cards, cards)
 
-
-    
-get_unique_cards(page, site)
-  

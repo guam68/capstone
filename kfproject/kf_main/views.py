@@ -1,11 +1,12 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from kfproject import credentials as cred
+from . import credentials as cred 
 from .models import Deck, Card, Deck_Card, Deck_House
 from . import kf_data as kf
 
 from psycopg2 import connect
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
 
 def index(request):
     return render(request, 'kf_main/index.html')
@@ -68,7 +69,7 @@ def get_stats(deck_cards):
 
 def get_global_stats():
     deck_count = 0
-    deck_list = Deck.objects.all()
+    deck_list = [Deck.objects.get(id='4772f854-d3c8-4c69-89a0-84932b69f121')]
     total_pwr_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     total_type_nums = {
         'action': 0,
@@ -77,12 +78,23 @@ def get_global_stats():
         'upgrade': 0
     }
     avg_type_nums = {}
-
+    con = connect(dbname='keyforge', user=cred.login['user'], host='localhost', password=cred.login['password'])
+    
 
     for deck in deck_list:
-        deck_cards = Card.objects.filter(deck_card__deck_id=deck.id)
-        deck_cards = deck_cards.values_list('id', flat=True)
+        # deck_cards = Card.objects.filter(deck_card__deck_id=deck.id)
+        # deck_cards = deck_cards.values_list('id', flat=True)
+        cur = con.cursor()
+        
+        sql = """
+            select deck_id from deck_card where deck_id = %s;
+        """
+        print(deck.id)
+        cur.execute(sql, (deck.id, ))
+        deck_cards = cur.fetchall()
         print(deck_cards)
+        cur.close()
+        break #!!!
         power_list, type_nums = get_stats(deck_cards)
 
         power_list = [power_list[i] + total_pwr_list[i] for i in range(len(power_list))]
@@ -101,5 +113,5 @@ def get_global_stats():
 
 
 
-# get_global_stats()
+get_global_stats()
 # deck_card_list = Card.objects.filter(deck_card__deck_id=deck)
