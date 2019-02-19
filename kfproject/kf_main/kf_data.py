@@ -5,7 +5,7 @@ import time
 from time import sleep
 import datetime
 import ast
-from kfproject import credentials as cred
+import credentials as cred
 from psycopg2 import connect
 import sys
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
@@ -53,7 +53,7 @@ def get_unique_cards(page, site):
 
     cur.close()
     
-    for i in range(0, pages-page + 1):        
+    for i in range(0, pages-page + 1): 
         url = site[0] + str(page) + site[1]
         start_time = time.time()
         card_list = []
@@ -164,26 +164,36 @@ def add_deck(deck, con):
 
 def add_deck_houses(deck_id, house_list, con):
     cur = con.cursor()
+
     for house in house_list:
-        sql = """
-            insert into deck_house
-            values(%s,%s);       
-        """
-        cur.execute(sql, (deck_id, house))
+        cur.execute('select count(*) as house_count from deck_house where deck_id=%s', (deck_id,))
+        count = int(cur.fetchall()[0][0])
+
+        if count < 3:
+            sql = """
+                insert into deck_house
+                values(%s,%s);       
+            """
+            cur.execute(sql, (deck_id, house))
 
     cur.close() 
     
 
 def add_deck_cards(deck_id, deck_card_list, con):
     cur = con.cursor()
+    
     for card in deck_card_list:
-        sql = """
-            insert into deck_card
-            values(%s, %s);       
-        """
+        cur.execute('select count(*) as card_count from deck_card where deck_id=%s', (deck_id,))
+        count = int(cur.fetchall()[0][0])
+
+        if count < 36:
+            sql = """
+                insert into deck_card
+                values(%s, %s);       
+            """
        
-        add_list = [deck_id] + [card]
-        cur.execute(sql, (add_list))
+            add_list = [deck_id] + [card]
+            cur.execute(sql, (add_list))
     
     cur.close()
 
@@ -201,7 +211,6 @@ def get_runtime():
     return runtime
 
 
-
 def get_specific_deck(deck_id):
     url = f'https://www.keyforgegame.com/api/decks/{deck_id}/?links=cards'
     data = requests.get(url).json()   
@@ -211,3 +220,8 @@ def get_specific_deck(deck_id):
     cards = data['_linked']['cards']
     
     return (deck, deck_cards, cards)
+
+
+    
+get_unique_cards(page, site)
+  

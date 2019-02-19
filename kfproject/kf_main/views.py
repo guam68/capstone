@@ -4,6 +4,9 @@ from kfproject import credentials as cred
 from .models import Deck, Card, Deck_Card, Deck_House
 from . import kf_data as kf
 
+from psycopg2 import connect
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
 def index(request):
     return render(request, 'kf_main/index.html')
 
@@ -33,7 +36,7 @@ def deck_detail(request, deck_id):
     # deck = request.GET['id']
     data = kf.get_specific_deck(deck_id)
     deck_list = Deck.objects.filter(id=deck_id)
-    power_list, type_nums = get_stats(data)
+    power_list, type_nums = get_stats(data[1])
 
     context = {
         'deck': deck_list[0],
@@ -45,9 +48,9 @@ def deck_detail(request, deck_id):
     return render(request, 'kf_main/deck_detail.html', context)
 
 
-def get_stats(data):
-    _, deck_cards, cards = data
-    power_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+def get_stats(deck_cards):
+    # _, deck_cards, _ = data
+    power_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     type_nums = {
         'action': 0,
         'artifact': 0,
@@ -63,7 +66,40 @@ def get_stats(data):
     return (power_list, type_nums)
 
 
+def get_global_stats():
+    deck_count = 0
+    deck_list = Deck.objects.all()
+    total_pwr_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    total_type_nums = {
+        'action': 0,
+        'artifact': 0,
+        'creature': 0,
+        'upgrade': 0
+    }
+    avg_type_nums = {}
+
+
+    for deck in deck_list:
+        deck_cards = Card.objects.filter(deck_card__deck_id=deck.id)
+        deck_cards = deck_cards.values_list('id', flat=True)
+        print(deck_cards)
+        power_list, type_nums = get_stats(deck_cards)
+
+        power_list = [power_list[i] + total_pwr_list[i] for i in range(len(power_list))]
+        for card_type in type_nums:
+            total_type_nums[card_type] += type_nums[card_type]
+            deck_count += 1
+        
+    power_list = [power_list[i]/deck_count for i in range(len(power_list))]
+    for card_type in total_type_nums:
+        avg_type_nums[card_type] = int(total_type_nums['action']/deck_count)
+    
+    print(f'avg power: {power_list}')
+    print(f'avg card type: {avg_type_nums}')
+    
 
 
 
+
+# get_global_stats()
 # deck_card_list = Card.objects.filter(deck_card__deck_id=deck)
