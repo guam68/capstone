@@ -1,9 +1,12 @@
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Deck Detail</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'kf_main/detail_style.css' %}" />
 </head>
 <body>
     Deck: {{ deck.name }}
@@ -13,5 +16,32 @@
     {% for card in deck_card_list %}
     <p>{{ card }}</p>
     {% endfor %}
+
+
+    <script>
+        let power_data = {{ power_list }};
+        let svg = d3.select("body").append("svg")
+            .attr("height", "100%")
+            .attr("width", "100%");
+
+        svg.selectAll("rect")
+            .data(power_data)
+            .enter().append("rect")
+                .attr("class", "bar")
+                .attr("height", function(d, i) {return (d * 15)})
+                .attr("width", "30")
+                .attr("x", function(d, i) {return (i * 31) + 25})
+                .attr("y", function(d, i) {return 400 - (d * 15)});
+
+        svg.selectAll("text")        
+            .data(power_data)
+            .enter().append("text")
+            .text(function(d) {return d})
+                .attr("class", "text")
+                .attr("x", function(d, i) {return (i * 31) + 36})
+                .attr("y", function(d, i) {return 415 - (d * 15)})
+
+
+    </script>
 </body>
 </html>

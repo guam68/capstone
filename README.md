@@ -78,8 +78,8 @@ Once on the deck detail page, the user will be presented with the information an
 
 ### Week 1
 
-- [ ] Basic html elements for site (home + detail pages)
-- [ ] Get search working
+- [x] Basic html elements for site (home + detail pages)
+- [x] Get basic search working
 - [ ] Get raw data to detail page
 
 ### Week 2

@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from . import credentials as cred 
 from .models import Deck, Card, Deck_Card, Deck_House
 from . import kf_data as kf
+from django.db.models import Sum, Q
 
 from psycopg2 import connect
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
@@ -69,7 +70,9 @@ def get_stats(deck_cards):
 
 def get_global_stats():
     deck_count = 0
-    deck_list = [Deck.objects.get(id='4772f854-d3c8-4c69-89a0-84932b69f121')]
+    power_list = []
+    type_nums = []
+    deck_list = Deck.objects.all()
     total_pwr_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
     total_type_nums = {
         'action': 0,
@@ -78,23 +81,22 @@ def get_global_stats():
         'upgrade': 0
     }
     avg_type_nums = {}
-    con = connect(dbname='keyforge', user=cred.login['user'], host='localhost', password=cred.login['password'])
+    # con = connect(dbname='keyforge', user=cred.login['user'], host='localhost', password=cred.login['password'])
     
-
     for deck in deck_list:
-        # deck_cards = Card.objects.filter(deck_card__deck_id=deck.id)
-        # deck_cards = deck_cards.values_list('id', flat=True)
-        cur = con.cursor()
-        
-        sql = """
-            select deck_id from deck_card where deck_id = %s;
-        """
-        print(deck.id)
-        cur.execute(sql, (deck.id, ))
-        deck_cards = cur.fetchall()
+        deck_cards = Card.objects.filter(deck_card__deck_id=deck.id)
+        deck_cards = deck_cards.values_list('id', flat=True)
         print(deck_cards)
-        cur.close()
-        break #!!!
+        break
+        # cur = con.cursor()
+        
+        # sql = """
+        #     select deck_id from deck_card where deck_id = %s;
+        # """
+        # cur.execute(sql, (deck.id, ))
+        # deck_cards = cur.fetchall()
+        # cur.close()
+
         power_list, type_nums = get_stats(deck_cards)
 
         power_list = [power_list[i] + total_pwr_list[i] for i in range(len(power_list))]
@@ -102,16 +104,45 @@ def get_global_stats():
             total_type_nums[card_type] += type_nums[card_type]
             deck_count += 1
         
-    power_list = [power_list[i]/deck_count for i in range(len(power_list))]
-    for card_type in total_type_nums:
-        avg_type_nums[card_type] = int(total_type_nums['action']/deck_count)
+        
+    # power_list = [power_list[i]/deck_count for i in range(len(power_list))]
+    #     for card_type in total_type_nums:
+    #         avg_type_nums[card_type] = int(total_type_nums['action']/deck_count)
     
-    print(f'avg power: {power_list}')
-    print(f'avg card type: {avg_type_nums}')
+    # print(f'avg power: {power_list}')
+    # print(f'avg card type: {avg_type_nums}')
     
+# Average chains for decks with registered games   
+def get_chains():
+    total_chains = Deck.objects.aggregate(Sum('chains'))
+    deck_count = Deck.objects.filter(Q(wins__gt=0) | Q(losses__gt=0)).count()
+
+    return total_chains['chains__sum']/deck_count
+
+# Average win/loss ratio for decks with registered games 
+def get_win_loss():
+    deck_list = Deck.objects.filter(Q(wins__gt=0) | Q(losses__gt=0))
+    win_loss_total = 0
+
+    for deck in deck_list:
+        if deck.losses != 0:
+            win_loss_total += deck.wins / deck.losses
+        else:
+            win_loss_total += deck.wins
+
+    return win_loss_total / len(deck_list)
+
+# Average OP games for decks with registered games
+def get_avg_games():
+    deck_list = Deck.objects.filter(Q(wins__gt=0) | Q(losses__gt=0))
+    total_games = 0
+
+    for deck in deck_list:
+        total_games += deck.wins + deck.losses
+
+    return total_games / len(deck_list)
 
 
 
-
-get_global_stats()
+# get_global_stats()
 # deck_card_list = Card.objects.filter(deck_card__deck_id=deck)
