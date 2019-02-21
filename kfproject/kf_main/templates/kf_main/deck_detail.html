@@ -1,49 +1,83 @@
 {% load static %}
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Deck Detail</title>
     <script src="https://d3js.org/d3.v5.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'kf_main/detail_style.css' %}" />
-</head>
-<body>
-    Deck: {{ deck.name }}
-    id: {{ deck.id }}
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'kf_main/detail_style.css' %}"
+    />
+  </head>
+  <body>
+    Deck: {{ deck.name }} id: {{ deck.id }}
     {{ power_list }}
     {{ type_nums }}
+    <ul>
+      <li>Action: {{ g_action }}</li>
+      <li>Artifact: {{ g_artifact }}</li>
+      <li>Creature: {{ g_creature }}</li>
+      <li>Upgrade: {{ g_upgrade }}</li>
+      <li>Amber: {{ g_amber }}</li>
+    </ul>
     {% for card in deck_card_list %}
     <p>{{ card }}</p>
     {% endfor %}
 
-    
-
+    <div class="bar_chart" id="pwr_dist"></div>
+    <div class="bar_chart" id="g_action"></div>
+    <div class="bar_chart" id="g_artifact"></div>
+    <div class="bar_chart" id="g_creature"></div>
+    <div class="bar_chart" id="g_upgrade"></div>
+    <div class="bar_chart" id="g_amber"></div>
 
     <script>
-        let power_data = {{ power_list }};
-        let svg = d3.select("body").append("svg")
+
+      
+        
+      generate_barchart({{ power_list }}, '#pwr_dist')
+      generate_barchart({{ g_action }}, '#g_action')
+      generate_barchart({{ g_artifact }}, '#g_artifact')
+      generate_barchart({{ g_creature }}, '#g_creature')
+      generate_barchart({{ g_upgrade }}, '#g_upgrade')
+      generate_barchart({{ g_amber }}, '#g_amber')
+
+
+      function generate_barchart(data_list, element_id) {
+        let svg = d3.select(element_id).append("svg")
             .attr("height", "100%")
             .attr("width", "100%");
 
+        let bar_width = 10;
+        let width = (bar_width + 10) * Object.values(data_list).length;
+        let height = 200;
+
+        
+        let scale = d3.scaleLinear().domain([0, d3.max(Object.values(data_list))]).range([0, 250]);
+
+        // let x = d3.scaleLinear().domain([0, data_list.length]).range([0, width]);
+        // let y = d3.scaleLinear().domain([0, d3.max(Object.values(data_list))]).range([0, height]);
+
         svg.selectAll("rect")
-            .data(power_data)
-            .enter().append("rect")
-                .attr("class", "bar")
-                .attr("height", function(d, i) {return (d * 15)})
-                .attr("width", "30")
-                .attr("x", function(d, i) {return (i * 31) + 25})
-                .attr("y", function(d, i) {return 400 - (d * 15)});
+        .data(Object.values(data_list))
+        .enter().append("rect")
+            .attr("class", "bar")
+            .attr("height", function (d) {return scale(d);})
+            .attr("width", bar_width)
+            .attr("x", function(d, i) {return (i*10) + 5})
+            .attr("y", function(d, i) {return 250 - scale(d)});
 
-        svg.selectAll("text")        
-            .data(power_data)
-            .enter().append("text")
-            .text(function(d) {return d})
-                .attr("class", "text")
-                .attr("x", function(d, i) {return (i * 31) + 36})
-                .attr("y", function(d, i) {return 415 - (d * 15)})
-
-
+          // svg.selectAll("text")
+          //     .data(Object.values(data_list))
+          //     .enter().append("text")
+          //     .text(function(d) {return d})
+          //         .attr("class", "text")
+          //         .attr("x", function(d, i) {return (i * 31) + 36})
+          //         .attr("y", function(d, i) {return 415 - (d * 15)})
+      }
     </script>
-</body>
+  </body>
 </html>

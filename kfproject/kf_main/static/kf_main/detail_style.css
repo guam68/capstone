@@ -2,3 +2,8 @@
 .bar {
     fill: blue;
 }
+
+.bar_chart {
+    height: 300px;
+    width: 500px;
+}

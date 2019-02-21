@@ -40,12 +40,18 @@ def deck_detail(request, deck_id):
     data = kf.get_specific_deck(deck_id)
     deck_list = Deck.objects.filter(id=deck_id)
     power_list, type_nums = get_stats(data[1])
+    g_action, g_artifact, g_creature, g_upgrade, g_amber = get_global_stats()
 
     context = {
         'deck': deck_list[0],
         'deck_card_list': data[1],
         'power_list': power_list,
-        'type_nums': type_nums
+        'type_nums': type_nums,
+        'g_action': g_action,
+        'g_artifact': g_artifact,
+        'g_creature': g_creature,
+        'g_upgrade': g_upgrade,
+        'g_amber': g_amber
     }
 
     return render(request, 'kf_main/deck_detail.html', context)
@@ -70,7 +76,7 @@ def get_stats(deck_cards):
 
 
 def get_global_stats():
-    deck_list = Deck.objects.all
+    deck_list = Deck.objects.all()
     action_dist = {}
     artifact_dist = {}
     creature_dist = {}
@@ -98,7 +104,14 @@ def get_global_stats():
             amber_dist[deck.bonus_amber] += 1
         else:
             amber_dist[deck.bonus_amber] = 1
-            
+
+    action_dist.pop(None)
+    artifact_dist.pop(None)
+    creature_dist.pop(None)
+    upgrade_dist.pop(None)
+    amber_dist.pop(None)
+    
+    return (action_dist, artifact_dist, creature_dist, upgrade_dist, amber_dist)
             
             
             
@@ -137,6 +150,5 @@ def get_avg_games():
     return total_games / len(deck_list)
 
 
-dp.set_deck_attrib()
-# get_global_stats()
+# dp.set_deck_attrib()
 # deck_card_list = Card.objects.filter(deck_card__deck_id=deck)
