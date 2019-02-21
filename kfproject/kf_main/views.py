@@ -4,6 +4,7 @@ from . import credentials as cred
 from .models import Deck, Card, Deck_Card, Deck_House
 from . import kf_data as kf
 from django.db.models import Sum, Q
+from . import deck_processor as dp
 
 from psycopg2 import connect
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
@@ -69,55 +70,47 @@ def get_stats(deck_cards):
 
 
 def get_global_stats():
-    deck_count = 0
-    power_list = []
-    type_nums = []
-    deck_list = Deck.objects.all()
-    total_pwr_list = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    total_type_nums = {
-        'action': 0,
-        'artifact': 0,
-        'creature': 0,
-        'upgrade': 0
-    }
-    avg_type_nums = {}
-    # con = connect(dbname='keyforge', user=cred.login['user'], host='localhost', password=cred.login['password'])
-    
+    deck_list = Deck.objects.all
+    action_dist = {}
+    artifact_dist = {}
+    creature_dist = {}
+    upgrade_dist = {}
+    amber_dist = {}
+
     for deck in deck_list:
-        deck_cards = Card.objects.filter(deck_card__deck_id=deck.id)
-        deck_cards = deck_cards.values_list('id', flat=True)
-        print(deck_cards)
-        break
-        # cur = con.cursor()
-        
-        # sql = """
-        #     select deck_id from deck_card where deck_id = %s;
-        # """
-        # cur.execute(sql, (deck.id, ))
-        # deck_cards = cur.fetchall()
-        # cur.close()
+        if deck.num_action in action_dist:
+            action_dist[deck.num_action] += 1
+        else:
+            action_dist[deck.num_action] = 1
+        if deck.num_artifact in artifact_dist:
+            artifact_dist[deck.num_artifact] += 1
+        else:
+            artifact_dist[deck.num_artifact] = 1
+        if deck.num_creature in creature_dist:
+            creature_dist[deck.num_creature] += 1
+        else:
+            creature_dist[deck.num_creature] = 1
+        if deck.num_upgrade in upgrade_dist:
+            upgrade_dist[deck.num_upgrade] += 1
+        else:
+            upgrade_dist[deck.num_upgrade] = 1
+        if deck.bonus_amber in amber_dist:
+            amber_dist[deck.bonus_amber] += 1
+        else:
+            amber_dist[deck.bonus_amber] = 1
+            
+            
+            
+            
 
-        power_list, type_nums = get_stats(deck_cards)
 
-        power_list = [power_list[i] + total_pwr_list[i] for i in range(len(power_list))]
-        for card_type in type_nums:
-            total_type_nums[card_type] += type_nums[card_type]
-            deck_count += 1
-        
-        
-    # power_list = [power_list[i]/deck_count for i in range(len(power_list))]
-    #     for card_type in total_type_nums:
-    #         avg_type_nums[card_type] = int(total_type_nums['action']/deck_count)
-    
-    # print(f'avg power: {power_list}')
-    # print(f'avg card type: {avg_type_nums}')
-    
 # Average chains for decks with registered games   
 def get_chains():
     total_chains = Deck.objects.aggregate(Sum('chains'))
     deck_count = Deck.objects.filter(Q(wins__gt=0) | Q(losses__gt=0)).count()
 
     return total_chains['chains__sum']/deck_count
+
 
 # Average win/loss ratio for decks with registered games 
 def get_win_loss():
@@ -132,6 +125,7 @@ def get_win_loss():
 
     return win_loss_total / len(deck_list)
 
+
 # Average OP games for decks with registered games
 def get_avg_games():
     deck_list = Deck.objects.filter(Q(wins__gt=0) | Q(losses__gt=0))
@@ -143,6 +137,6 @@ def get_avg_games():
     return total_games / len(deck_list)
 
 
-
+dp.set_deck_attrib()
 # get_global_stats()
 # deck_card_list = Card.objects.filter(deck_card__deck_id=deck)

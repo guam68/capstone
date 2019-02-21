@@ -217,6 +217,12 @@ def get_specific_deck(deck_id):
     deck = data['data']
     deck_cards = data['data']['_links']['cards']
     cards = data['_linked']['cards']
+
+
+    
     
     return (deck, deck_cards, cards)
+
+
+
 
