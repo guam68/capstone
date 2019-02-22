@@ -3,6 +3,8 @@ from .models import Deck, Card, Deck_Card, Deck_House
 
 def set_deck_attrib():
     deck_list = Deck.objects.filter(num_action__isnull=True)
+    # deck_list = Deck.objects.filter(power_level__gt=1)
+
     print(len(deck_list))
     count= 0
     total_processed = {

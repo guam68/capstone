@@ -17,12 +17,26 @@
     {{ power_list }}
     {{ type_nums }}
     <ul>
+      <h3>
+        Global
+      </h3>
       <li>Action: {{ g_action }}</li>
       <li>Artifact: {{ g_artifact }}</li>
       <li>Creature: {{ g_creature }}</li>
       <li>Upgrade: {{ g_upgrade }}</li>
       <li>Amber: {{ g_amber }}</li>
     </ul>
+    <ul>
+      <h3>
+        Top
+      </h3>
+      <li>Action: {{ top_action }}</li>
+      <li>Artifact: {{ top_artifact }}</li>
+      <li>Creature: {{ top_creature }}</li>
+      <li>Upgrade: {{ top_upgrade }}</li>
+      <li>Amber: {{ top_amber }}</li>
+    </ul>
+
     {% for card in deck_card_list %}
     <p>{{ card }}</p>
     {% endfor %}
@@ -33,17 +47,28 @@
     <div class="bar_chart" id="g_creature"></div>
     <div class="bar_chart" id="g_upgrade"></div>
     <div class="bar_chart" id="g_amber"></div>
+    <div class="bar_chart" id="top_action"></div>
+    <div class="bar_chart" id="top_artifact"></div>
+    <div class="bar_chart" id="top_creature"></div>
+    <div class="bar_chart" id="top_upgrade"></div>
+    <div class="bar_chart" id="top_amber"></div>
 
     <script>
 
-      
-        
+
+
       generate_barchart({{ power_list }}, '#pwr_dist')
       generate_barchart({{ g_action }}, '#g_action')
       generate_barchart({{ g_artifact }}, '#g_artifact')
       generate_barchart({{ g_creature }}, '#g_creature')
       generate_barchart({{ g_upgrade }}, '#g_upgrade')
       generate_barchart({{ g_amber }}, '#g_amber')
+      generate_barchart({{ top_action }}, '#top_action')
+      generate_barchart({{ top_artifact }}, '#top_artifact')
+      generate_barchart({{ top_creature }}, '#top_creature')
+      generate_barchart({{ top_upgrade }}, '#top_upgrade')
+      generate_barchart({{ top_amber }}, '#top_amber')
+
 
 
       function generate_barchart(data_list, element_id) {
@@ -51,11 +76,9 @@
             .attr("height", "100%")
             .attr("width", "100%");
 
-        let bar_width = 10;
-        let width = (bar_width + 10) * Object.values(data_list).length;
-        let height = 200;
+        let bar_width = 500 / Object.values(data_list).length;
 
-        
+
         let scale = d3.scaleLinear().domain([0, d3.max(Object.values(data_list))]).range([0, 250]);
 
         // let x = d3.scaleLinear().domain([0, data_list.length]).range([0, width]);
@@ -66,17 +89,17 @@
         .enter().append("rect")
             .attr("class", "bar")
             .attr("height", function (d) {return scale(d);})
-            .attr("width", bar_width)
-            .attr("x", function(d, i) {return (i*10) + 5})
+            .attr("width", bar_width -bar_width*.05)
+            .attr("x", function(d, i) {return (i*bar_width)})
             .attr("y", function(d, i) {return 250 - scale(d)});
 
-          // svg.selectAll("text")
-          //     .data(Object.values(data_list))
-          //     .enter().append("text")
-          //     .text(function(d) {return d})
-          //         .attr("class", "text")
-          //         .attr("x", function(d, i) {return (i * 31) + 36})
-          //         .attr("y", function(d, i) {return 415 - (d * 15)})
+          svg.selectAll("text")
+              .data(Object.keys(data_list))
+              .enter().append("text")
+              .text(function(d) {return d})
+                  .attr("class", "bar_text")
+                  .attr("x", function(d, i) {return (i*bar_width)})
+                  .attr("y", 250 + 20)
       }
     </script>
   </body>

@@ -94,6 +94,9 @@ def get_unique_cards(page, site):
 
             house_list = links['houses']
             deck_card_list = links['cards']
+
+            # get_stats()
+
             try:
                 # Look into using a transaction here for queries (begin/commit)
                 add_deck(deck, con)
@@ -218,10 +221,12 @@ def get_specific_deck(deck_id):
     deck_cards = data['data']['_links']['cards']
     cards = data['_linked']['cards']
 
-
-    
-    
     return (deck, deck_cards, cards)
+
+
+def get_stats(deck_card_list, card_list):
+    for card in deck_card_list:
+        pass
 
 
 
