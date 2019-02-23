@@ -108,3 +108,4 @@ credentials.py
 
 # Django
 migrations
+migrations_old

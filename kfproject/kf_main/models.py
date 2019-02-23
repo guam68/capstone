@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField
 
 class Card(models.Model):
     id = models.TextField(primary_key=True)
@@ -70,3 +71,26 @@ class Deck_House(models.Model):
     class Meta:
         managed = False
         db_table = 'deck_house'
+
+
+class Deck2(models.Model):
+    name = models.TextField(blank=True, null=True)
+    expansion = models.IntegerField(blank=True, null=True)
+    power_level = models.IntegerField(blank=True, null=True)
+    chains = models.IntegerField(blank=True, null=True)
+    wins = models.IntegerField(blank=True, null=True)
+    losses = models.IntegerField(blank=True, null=True)
+    id = models.TextField(primary_key=True)
+    num_action = models.IntegerField(blank=True, null=True)
+    num_artifact = models.IntegerField(blank=True, null=True)
+    num_creature = models.IntegerField(blank=True, null=True)
+    num_upgrade = models.IntegerField(blank=True, null=True)
+    bonus_amber = models.IntegerField(blank=True, null=True)
+    creature_pwr = JSONField(blank=True, null=True)
+    house_list= ArrayField(models.TextField(), blank=True, null=True)
+    card_list = ArrayField(models.TextField(), blank=True, null=True)
+
+
+    class Meta:
+        managed = True 
+        db_table = 'deck2'

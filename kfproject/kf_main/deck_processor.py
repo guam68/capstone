@@ -1,4 +1,4 @@
-from .models import Deck, Card, Deck_Card, Deck_House
+# from .models import Deck, Card, Deck_Card, Deck_House
 
 
 def set_deck_attrib():

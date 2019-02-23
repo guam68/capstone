@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from . import credentials as cred 
 from .models import Deck, Card, Deck_Card, Deck_House
 from . import kf_data as kf
+from . import kf_data_v2 as kf2
 from django.db.models import Sum, Q
 from . import deck_processor as dp
 
@@ -177,23 +178,27 @@ def get_avg_games():
 
 
 
-def get_nodes(deck_id):
-    cur = connection.cursor()
-    cur.execute('SELECT house FROM deck_house where deck_id = %s', (deck_id,))
-    houses = cur.fetchall()
-    print(houses)
+# def get_nodes(deck_id):
+#     cur = connection.cursor()
+#     cur.execute('SELECT house FROM deck_house where deck_id = %s', (deck_id,))
+#     houses = cur.fetchall()
+#     print(houses)
 
-    cur.execute('''
-        SELECT deck_id from deck_house
-        where house in (%s, %s, %s)   
-        group by deck_id                            
-        having count(distinct house) = 3
-        ;''', [houses[0][0], houses[1][0], houses[2][0]])
+#     cur.execute('''
+#         SELECT deck_id from deck_house
+#         where house in (%s, %s, %s)   
+#         group by deck_id                            
+#         having count(distinct house) = 3
+#         ;''', [houses[0][0], houses[1][0], houses[2][0]])
     
-    decks = cur.fetchall()
+#     decks = cur.fetchall()
 
 
-get_nodes('bccfcf95-082a-4f4b-9c08-cbb2106581e1')
+
+
+# kf2.test()
+kf2.get_unique_cards(kf2.page, kf2.site)
+# get_nodes('bccfcf95-082a-4f4b-9c08-cbb2106581e1')
 # get_top_dist()
 # dp.set_deck_attrib()
 # deck_card_list = Card.objects.filter(deck_card__deck_id=deck)
