@@ -35,7 +35,8 @@ def get_unique_cards(page, site):
     cards = []
     decks = []
     page_count = 0
-
+    deck_objs = []
+    card_objs = []
     # con = connect(dbname='keyforge', user=cred.login['user'], host='localhost', password=cred.login['password'])
 
     # get_page_sql = """
@@ -65,8 +66,6 @@ def get_unique_cards(page, site):
         deck_list = []
         house_list = []
         deck_card_list = []
-        deck_objs = []
-        card_objs = []
         card_dict = {}
 
 
@@ -150,30 +149,35 @@ def get_unique_cards(page, site):
 
             deck_objs += [new_deck]
 
-        page_count += 1
         if page_count == 100:
             print('!')
             try:
                 Deck2.objects.bulk_create(deck_objs, batch_size=100, ignore_conflicts=True)
-
             except:
                 logging.exception(f'{datetime.datetime.now()} Error when inserting data on page: {page}')
                 sleep(5)
 
             try:
                 Card.objects.bulk_create(card_objs, batch_size=100, ignore_conflicts=True)
+                Current_Page.objects.filter(id=1).update(page=page)
+                Current_Page.objects.filter(id=1).update(run_time=get_runtime())
             except:
                 logging.exception(f'{datetime.datetime.now()} Error when inserting card data on page: {page}')
                 sleep(5)
-
+            
             page_count = 0
+            deck_objs = []
+            card_objs = []
 
         
+        page_count += 1
         print(page, '/', pages, ' ', end='')
         page += 1
         print(f'Page process time: {int(time.time() - start_time)} p_count: {page_count}')
 
         sleep(.5)
+
+    get_runtime()
     
     
 def assign_data(url):
