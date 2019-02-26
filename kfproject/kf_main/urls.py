@@ -8,5 +8,5 @@ urlpatterns = [
     path('deck_search/', views.deck_search, name='deck_search'),
     path('deck_list/', views.deck_list, name='deck_list'),
     path('deck_detail/<str:deck_id>', views.deck_detail, name='deck_detail'),
-    # path('nodes', views.get_nodes, name='get_nodes')
+    path('nodes/', views.get_nodes, name='get_nodes')
 ]

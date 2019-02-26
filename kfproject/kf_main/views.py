@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from . import credentials as cred 
 from .models import Deck, Card, Deck_Card, Deck_House, Deck2
 from . import kf_data as kf
@@ -7,6 +7,9 @@ from . import kf_data_v2 as kf2
 from django.db.models import Sum, Q
 from . import deck_processor as dp
 from collections import defaultdict 
+
+import json
+from django.core import serializers
 
 from django.db import connection
 from psycopg2 import connect
@@ -50,7 +53,6 @@ def deck_detail(request, deck_id):
     print('getting top stats...')
     top_action, top_artifact, top_creature, top_upgrade, top_amber = get_top_dist()
     print('getting nodes...')
-    closest_decks = get_nodes(deck_id)
 
     context = {
         'deck': deck_list[0],
@@ -67,7 +69,7 @@ def deck_detail(request, deck_id):
         'top_creature': top_creature,
         'top_upgrade': top_upgrade,
         'top_amber': top_amber,
-        'closest_decks': closest_decks
+        # 'closest_decks': closest_decks
     }
 
     return render(request, 'kf_main/deck_detail.html', context)
@@ -184,7 +186,14 @@ def get_avg_games():
 
 
 
-def get_nodes(deck_id):
+def get_nodes(request):
+    # deck_id = request.GET('deck_id')
+    data = json.loads(request.body)
+    print(data)
+    deck_id = data['deck_id']
+    print()
+    print(deck_id)
+    print()
     # cur = connection.cursor()
     # cur.execute('SELECT house FROM deck_house where deck_id = %s', (deck_id,))
     # houses = cur.fetchall()
@@ -219,8 +228,9 @@ def get_nodes(deck_id):
         percent_match.append([int(card_count/36*100), deck.id, deck.wins, deck.losses])
 
     percent_match.sort(key=lambda x: x[0], reverse=True)
+    percent_match = {'percent_match': percent_match[:26]}
 
-    return percent_match[:26]
+    return JsonResponse(percent_match)
 
 
 

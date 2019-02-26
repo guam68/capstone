@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Deck Detail</title>
+    <link rel="icon" href="data:;base64,=">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script>
   <script>
@@ -27,6 +28,7 @@
     {{ power_list }}
     {{ type_nums }}
     <div>{{ closest_decks }}</div>
+    <div id="deck_id">{{ deck.id }}</div>
     <ul>
       <h3>
         Global
@@ -78,7 +80,17 @@
         generate_barchart({{ top_upgrade }}, '#top_upgrade')
         generate_barchart({{ top_amber }}, '#top_amber')
 
-        
+        let deck_id = document.querySelector("#deck_id").innerText
+        axios.post("{% url 'kf_main:get_nodes' %}", {
+            "deck_id": deck_id
+            }, {
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+            }
+            ).then(function(response) {
+                        generate_force(response.data["percent_match"])
+                    })
 
 
         function generate_barchart(data_list, element_id) {
@@ -253,7 +265,6 @@
         }
         
     
-        generate_force({{ closest_decks|safe }})
 
     </script>
   </body>
