@@ -20,7 +20,12 @@
 }
 
 .node circle {
-    /* fill: rgb(104, 104, 104); */
     stroke: #333;
     stroke-width: 1.5px;
 }
+
+#type_pie {
+    height: 300px;
+    width: 500px;
+}
+

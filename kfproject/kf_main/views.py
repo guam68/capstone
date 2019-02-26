@@ -94,8 +94,11 @@ def get_stats(deck_cards):      # list of card ids
         else:
             power_list[card_details.power] = 1
 
-    
-    return (power_list, type_nums)
+    type_list = []
+    for card_type in type_nums:
+        type_list.append({'type': card_type, 'amount': type_nums[card_type]})
+
+    return (power_list, type_list)
 
 
 def get_global_dist():

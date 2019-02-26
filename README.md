@@ -84,8 +84,8 @@ Once on the deck detail page, the user will be presented with the information an
 
 ### Week 2
 
-- [ ] Bar graphs for all data
-- [ ] Basic force-directed graph (fdg) for similar deck comp visual
+- [x] Bar graphs for all data
+- [x] Basic force-directed graph (fdg) for similar deck comp visual
 
 ### Week 3
 

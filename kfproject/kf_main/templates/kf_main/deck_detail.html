@@ -55,6 +55,7 @@
     {% endfor %}
 
     <div id="force"></div>
+    <div id=type_pie></div>
     <div class="bar_chart" id="pwr_dist"></div>
     <div class="bar_chart" id="g_action"></div>
     <div class="bar_chart" id="g_artifact"></div>
@@ -68,6 +69,7 @@
     <div class="bar_chart" id="top_amber"></div>
 
     <script>
+        make_pie({{ type_nums|safe }})
         generate_barchart({{ power_list }}, '#pwr_dist')
         generate_barchart({{ g_action }}, '#g_action')
         generate_barchart({{ g_artifact }}, '#g_artifact')
@@ -93,18 +95,65 @@
                     })
 
 
+        function make_pie(type_nums) {
+            let height = 300
+            let width = 500
+            let radius = Math.min(width, height) / 3
+            let color = d3v4.scaleOrdinal(["#4daf4a","#377eb8","#ff7f00","#984ea3"])
+
+            let svg = d3v4.select("#type_pie")
+                .append("svg")
+                .attr("height", height)
+                .attr("width", width)
+                .append("g")
+                .attr("transform", "translate(" + width/2 + "," + height/2 + ")")
+
+            let arc = d3v4.arc()
+                .outerRadius(radius)
+                .innerRadius(radius - radius*.3)
+
+            let pie = d3v4.pie()
+                .value(function(d){
+                    return d.amount
+                })
+                .sort(null)
+
+            let label = d3v4.arc()
+                .outerRadius(radius)
+                .innerRadius(radius + 50)    
+
+            let path = svg.selectAll("path") 
+                .data(pie(type_nums))
+                .enter()
+                .append("path")
+                .attr("d", arc)
+                .attr("fill", function(d) {
+                    return color(d.data.type)
+                })
+
+            let text = svg.selectAll("text")
+                .data(pie(type_nums))
+                .enter()
+                .append("text")
+                .attr("transform", function(d) { 
+                        return "translate(" + label.centroid(d) + ")" 
+                })
+                .attr("text-anchor", "middle")
+                .text(function(d) { 
+                        return d.data.type 
+                    })
+                .style("fill", "black");
+                
+        }
+
+
         function generate_barchart(data_list, element_id) {
             let svg = d3v4.select(element_id).append("svg")
                 .attr("height", "100%")
                 .attr("width", "100%")
 
             let bar_width = 500 / Object.values(data_list).length;
-
-
             let scale = d3v4.scaleLinear().domain([0, d3v4.max(Object.values(data_list))]).range([0, 250])
-
-            // let x = d3.scaleLinear().domain([0, data_list.length]).range([0, width]);
-            // let y = d3.scaleLinear().domain([0, d3.max(Object.values(data_list))]).range([0, height]);
 
             svg.selectAll("rect")
             .data(Object.values(data_list))
@@ -127,8 +176,6 @@
 
         function generate_force(closest_decks) {
             let links = []
-            // let width = 500
-            // let height = 300
 
             for (let i=0; i < closest_decks.length; i++) {
                 let wins = closest_decks[i][2]
@@ -147,21 +194,8 @@
                 }
                 links.push(data_row);
             }
-            console.log(links)
             let nodes = {}
 
-            // links.forEach(function(link) {
-            //     link.source = nodes[link.source] ||
-            //         (nodes[link.source] = {name: link.source})
-            //     link.target = nodes[link.target] ||
-            //         (nodes[link.target] = {name: link.target})
-            // })
-
-            // console.log(nodes)
-
-            // var nodes = {};
-
-            // Compute the distinct nodes from the links.
             links.forEach(function(link) {
             link.source = nodes[link.source] || 
                 (nodes[link.source] = {name: link.source, percent: link.percent, win_loss: link.win_loss});
@@ -169,12 +203,10 @@
                 (nodes[link.target] = {name: link.target, percent: link.percent, win_loss: link.win_loss});
             });
 
-            console.log(nodes)
+            let width = 500
+            let height = 300
 
-            var width = 960,
-                height = 500;
-
-            var force = d3v3.layout.force()
+            let force = d3v3.layout.force()
                 .nodes(d3v3.values(nodes))
                 .links(links)
                 .size([width, height])
@@ -183,16 +215,16 @@
                 .on("tick", tick)
                 .start();
 
-            var svg = d3v3.select("#force").append("svg")
+            let svg = d3v3.select("#force").append("svg")
                 .attr("width", width)
                 .attr("height", height);
 
-            var link = svg.selectAll(".link")
+            let link = svg.selectAll(".link")
                 .data(force.links())
                 .enter().append("line")
                 .attr("class", "link");
 
-            var node = svg.selectAll(".node")
+            let node = svg.selectAll(".node")
                 .data(force.nodes())
                 .enter().append("g")
                 .attr("class", "node")
@@ -212,7 +244,6 @@
                     alert("You clicked on node " + d.name);
                 })
                 .call(force.drag);
-
             
             node.append("circle")
                 .attr("r", function(d){ 
@@ -222,44 +253,45 @@
                         return ((d.percent/45)**7)
                     }})
                       
-
-
             // node.append("text")
             //     .attr("x", 12)
             //     .attr("dy", ".35em")
             //     .text(function(d) { return d.name; });
 
-            function tick() {
-            link
-                .attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
 
-            node
-                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+            function tick() {
+                link
+                    .attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+                node
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
             }
+
 
             function mouseover() {
-            d3v3.select(this).select("circle").transition()
-                .duration(750)
-                .attr("r", function(d){ 
-                    if (d.percent == 100) {
-                        return 10
-                    } else {
-                        return ((d.percent/45)**7*1.5)
-                    }});
+                d3v3.select(this).select("circle").transition()
+                    .duration(500)
+                    .attr("r", function(d){ 
+                        if (d.percent == 100) {
+                            return 10
+                        } else {
+                            return ((d.percent/45)**7*1.5)
+                        }});
             }
 
+
             function mouseout() {
-            d3v3.select(this).select("circle").transition()
-                .duration(750)
-                .attr("r", function(d){ 
-                    if (d.percent == 100) {
-                        return 10
-                    } else {
-                        return ((d.percent/45)**7)
-                    }});
+                d3v3.select(this).select("circle").transition()
+                    .duration(500)
+                    .attr("r", function(d){ 
+                        if (d.percent == 100) {
+                            return 10
+                        } else {
+                            return ((d.percent/45)**7)
+                        }});
             }
             
         }
