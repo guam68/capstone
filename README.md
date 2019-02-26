@@ -80,7 +80,7 @@ Once on the deck detail page, the user will be presented with the information an
 
 - [x] Basic html elements for site (home + detail pages)
 - [x] Get basic search working
-- [ ] Get raw data to detail page
+- [x] Get raw data to detail page
 
 ### Week 2
 

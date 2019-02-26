@@ -94,3 +94,16 @@ class Deck2(models.Model):
     class Meta:
         managed = True 
         db_table = 'deck2'
+
+
+class Distribution(models.Model):
+    id = models.IntegerField(primary_key=True)
+    action = JSONField(blank=True, null=True)
+    artifact = JSONField(blank=True, null=True)
+    creature = JSONField(blank=True, null=True)
+    upgrade = JSONField(blank=True, null=True)
+    amber = JSONField(blank=True, null=True)
+
+    class Meta:
+        managed = True 
+        db_table = 'distribution'

@@ -20,32 +20,21 @@ logging.basicConfig(filename='error.log', filemode = 'a', level=logging.WARNING)
 page = '1' 
 site = ('https://www.keyforgegame.com/api/decks/?page=','&page_size=25&links=cards&ordering=date') 
 
-# Get the number of pages required to process
+
 def get_num_pages():
     response = requests.get(site[0] + page + site[1]).json()
     count = int(response['count'])
     pages = count // 25
     return pages
 
-# Creates connection to database. Gets current page to be processed.
-# Gets data with assign_data() and cleans before passing as parameters to functions
-# Cycles through pages calling add_deck(), add_deck_houses(), add_deck_cards(), and get_cards()
-def get_unique_cards(page, site):
+
+def set_main_data(page, site):
     data = {} 
     cards = []
     decks = []
     page_count = 0
     deck_objs = []
     card_objs = []
-    # con = connect(dbname='keyforge', user=cred.login['user'], host='localhost', password=cred.login['password'])
-
-    # get_page_sql = """
-    #     select page from current_page;
-    # """
-
-    # con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-    # cur = con.cursor()
-    # cur.execute(get_page_sql)
 
     pages = get_num_pages()
     try:
@@ -56,8 +45,6 @@ def get_unique_cards(page, site):
     finally:
         if page == pages:
             page = 1
-
-    # cur.close()
     
     for i in range(0, pages-page + 1): 
         url = site[0] + str(page) + site[1]
@@ -68,22 +55,21 @@ def get_unique_cards(page, site):
         deck_card_list = []
         card_dict = {}
 
-
         try:
             cards, decks = assign_data(url)
-           
         except:
             print('Error timeout. Sleeeeeep')
             sleep(5)
             print('Reattempting data retrieval')
 
             try:
-                data, cards, decks = assign_data(url)
+                cards, decks = assign_data(url)
                 print('Data collection successful.')
             except:
                 logging.exception(f'{datetime.datetime.now()} Error retrieving data on page: {page}')
 
             continue
+
 
         for card in cards:
             card_dict[card['id']] = card
@@ -108,9 +94,6 @@ def get_unique_cards(page, site):
 
             card_objs += [new_card]
 
-            
-            
-            
 
         for deck in decks:
             deck_id = deck['id']
@@ -120,13 +103,11 @@ def get_unique_cards(page, site):
             del deck['is_on_my_watchlist']
             del deck['casual_wins']
             del deck['casual_losses']
-            # deck = list(deck.values())
             links = deck['_links']
 
             house_list = links['houses']
             deck_card_list = links['cards']
             
-
             bonus_amber, action, artifact, creature, upgrade, creature_pwr = get_deck_stats(deck_card_list, card_dict)
 
             new_deck = Deck2(
@@ -149,30 +130,49 @@ def get_unique_cards(page, site):
 
             deck_objs += [new_deck]
 
-        if page_count == 100:
-            print('!')
-            try:
-                Deck2.objects.bulk_create(deck_objs, batch_size=100, ignore_conflicts=True)
-            except:
-                logging.exception(f'{datetime.datetime.now()} Error when inserting data on page: {page}')
-                sleep(5)
 
+        if page_count == 100:
             try:
-                Card.objects.bulk_create(card_objs, batch_size=100, ignore_conflicts=True)
-                Current_Page.objects.filter(id=1).update(page=page)
-                Current_Page.objects.filter(id=1).update(run_time=get_runtime())
+                Deck2.objects.bulk_update(deck_objs, [
+                    'name',
+                    'expansion',
+                    'power_level',
+                    'chains',
+                    'wins',
+                    'losses',
+                    'id',
+                    'bonus_amber',
+                    'num_action',
+                    'num_artifact',
+                    'num_creature',
+                    'num_upgrade',
+                    'creature_pwr',
+                    'house_list',
+                    'card_list'
+                ])
             except:
-                logging.exception(f'{datetime.datetime.now()} Error when inserting card data on page: {page}')
-                sleep(5)
-            
+                try:
+                    Deck2.objects.bulk_create(deck_objs, batch_size=100, ignore_conflicts=True)
+                    Card.objects.bulk_create(card_objs, batch_size=100, ignore_conflicts=True)
+
+                    if Current_Page.objects.filter(id=1).exists():
+                        Current_Page.objects.filter(id=1).update(page=page)
+                        Current_Page.objects.filter(id=1).update(run_time=get_runtime())
+                    else:
+                        current_page = Current_Page.objects.create(id=1, page=page, run_time=get_runtime())
+                        current_page.save()
+                except:
+                    logging.exception(f'{datetime.datetime.now()} Error when inserting data on page: {page}')
+                    sleep(5)
+
             page_count = 0
             deck_objs = []
             card_objs = []
 
-        
-        page_count += 1
+
         print(page, '/', pages, ' ', end='')
         page += 1
+        page_count += 1
         print(f'Page process time: {int(time.time() - start_time)} p_count: {page_count}')
 
         sleep(.5)
@@ -237,5 +237,3 @@ def get_deck_stats(deck_list, card_list):
     return (amber, card_type['Action'], card_type['Artifact'], card_type['Creature'], card_type['Upgrade'], creature_pwr)
 
 
-
-    

@@ -1,11 +1,12 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from . import credentials as cred 
-from .models import Deck, Card, Deck_Card, Deck_House
+from .models import Deck, Card, Deck_Card, Deck_House, Deck2
 from . import kf_data as kf
 from . import kf_data_v2 as kf2
 from django.db.models import Sum, Q
 from . import deck_processor as dp
+from collections import defaultdict 
 
 from django.db import connection
 from psycopg2 import connect
@@ -26,7 +27,7 @@ def deck_list(request):
 def deck_search(request):
 
     deck_name = request.POST['search_string']
-    deck_list = Deck.objects.filter(name__icontains=deck_name)
+    deck_list = Deck2.objects.filter(name__icontains=deck_name)
 
     if not deck_list:
         return render(request, 'kf_main/index.html', {'message': 'No decks found'})
@@ -40,10 +41,16 @@ def deck_detail(request, deck_id):
 
     # deck = request.GET['id']
     data = kf.get_specific_deck(deck_id)
-    deck_list = Deck.objects.filter(id=deck_id)
+    print('getting deck...')
+    deck_list = Deck2.objects.filter(id=deck_id)         # should be get
+    print('getting deck stats...')
     power_list, type_nums = get_stats(data[1])
+    print('getting global stats...')
     g_action, g_artifact, g_creature, g_upgrade, g_amber = get_global_dist()
+    print('getting top stats...')
     top_action, top_artifact, top_creature, top_upgrade, top_amber = get_top_dist()
+    print('getting nodes...')
+    closest_decks = get_nodes(deck_id)
 
     context = {
         'deck': deck_list[0],
@@ -59,7 +66,8 @@ def deck_detail(request, deck_id):
         'top_artifact': top_artifact,
         'top_creature': top_creature,
         'top_upgrade': top_upgrade,
-        'top_amber': top_amber
+        'top_amber': top_amber,
+        'closest_decks': closest_decks
     }
 
     return render(request, 'kf_main/deck_detail.html', context)
@@ -176,29 +184,57 @@ def get_avg_games():
 
 
 
+def get_nodes(deck_id):
+    # cur = connection.cursor()
+    # cur.execute('SELECT house FROM deck_house where deck_id = %s', (deck_id,))
+    # houses = cur.fetchall()
+    user_deck = Deck2.objects.get(id=deck_id)
+    houses = user_deck.house_list
+    decks = Deck2.objects.all()
+    house_match_list = []
 
+    for deck in decks:
+        if houses[0] not in deck.house_list or houses[1] not in deck.house_list or houses[2] not in deck.house_list:
+            continue
+        else:
+            house_match_list.append(deck)
 
-# def get_nodes(deck_id):
-#     cur = connection.cursor()
-#     cur.execute('SELECT house FROM deck_house where deck_id = %s', (deck_id,))
-#     houses = cur.fetchall()
-#     print(houses)
+    # cur.execute('''
+        #     SELECT deck_id from deck_house
+        #     where house in (%s, %s, %s)   
+        #     group by deck_id                            
+        #     having count(distinct house) = 3
+        #     ;''', [user_deck.house_list[0], user_deck.house_list[1], user_deck.house_list[2]])
+        
+        # decks = cur.fetchall()
 
-#     cur.execute('''
-#         SELECT deck_id from deck_house
-#         where house in (%s, %s, %s)   
-#         group by deck_id                            
-#         having count(distinct house) = 3
-#         ;''', [houses[0][0], houses[1][0], houses[2][0]])
+    percent_match = []
     
-#     decks = cur.fetchall()
+    for deck in house_match_list:
+        card_count = 0
+        for card in user_deck.card_list:
+            if card in deck.card_list:
+                card_count+=1
+        
+        percent_match.append([int(card_count/36*100), deck.id, deck.wins, deck.losses])
+
+    percent_match.sort(key=lambda x: x[0], reverse=True)
+
+    return percent_match[:26]
 
 
 
 
-# kf2.test()
-kf2.get_unique_cards(kf2.page, kf2.site)
-# get_nodes('bccfcf95-082a-4f4b-9c08-cbb2106581e1')
+
+    
+
+
+
+
+
+
+# kf2.set_main_data(kf2.page, kf2.site)
+# get_nodes('eb5d4c4a-5957-4276-ab9a-0d1b19f42e81')
 # get_top_dist()
 # dp.set_deck_attrib()
 # deck_card_list = Card.objects.filter(deck_card__deck_id=deck)

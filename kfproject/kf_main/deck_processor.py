@@ -19,7 +19,7 @@ def set_deck_attrib():
         amber = 0
         card_type = {
             'Action': 0,
-            'Artifact': 0,
+            'Artifact': 0,          #look to use defaultdict here
             'Creature': 0,
             'Upgrade': 0
         }

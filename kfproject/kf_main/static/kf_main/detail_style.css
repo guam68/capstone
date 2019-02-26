@@ -7,3 +7,20 @@
     height: 300px;
     width: 500px;
 }
+
+#force {
+    height: 300px;
+    width: 500px;
+}
+
+.link {
+    fill: none;
+    stroke: rgb(75, 75, 75);
+    stroke-width: 1.5px;
+}
+
+.node circle {
+    /* fill: rgb(104, 104, 104); */
+    stroke: #333;
+    stroke-width: 1.5px;
+}
