@@ -50,26 +50,36 @@
       <li>Amber: {{ top_amber }}</li>
     </ul>
 
-    <div id="house_cards"><div class="house" id="house1">
-    <p>{{ house1 }}</p>
-    {% for card in deck_card_list %} {% if card.house == house1 %}
-    <div class="card">{{ card.card_title }}</div>
-    {% endif %} {% endfor %}
+    <img src="" alt="test_img" id="test_img">
+
+    <div id="house_cards">
+      <div class="house" id="house1">
+        <p>{{ house1 }}</p>
+        {% for card in deck_card_list %} {% if card.house == house1 %}
+        <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
+          {{ card.card_title }}
+        </div>
+        {% endif %} {% endfor %}
+      </div>
+
+      <div class="house" id="house2">
+        <p>{{ house2 }}</p>
+        {% for card in deck_card_list %} {% if card.house == house2 %}
+        <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
+          {{ card.card_title }}
+        </div>
+        {% endif %} {% endfor %}
+      </div>
+
+      <div class="house" id="house3">
+        <p>{{ house3 }}</p>
+        {% for card in deck_card_list %} {% if card.house == house3 %}
+        <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
+          {{ card.card_title }}
+        </div>
+        {% endif %} {% endfor %}
+      </div>
     </div>
-    
-    <div class="house" id="house2">
-    <p>{{ house2 }}</p>
-    {% for card in deck_card_list %} {% if card.house == house2 %}
-    <div class="card">{{ card.card_title }}</div>
-    {% endif %} {% endfor %}
-    </div>
-    
-    <div class="house" id="house3">
-    <p>{{ house3 }}</p>
-    {% for card in deck_card_list %} {% if card.house == house3 %}
-    <div class="card">{{ card.card_title }}</div>
-    {% endif %} {% endfor %}
-    </div></div>
 
     <div id="force"></div>
     <div id="type_pie"></div>
@@ -87,39 +97,49 @@
 
     <script>
       make_pie({{ type_nums|safe }})
-      generate_barchart({{ power_list }}, '#pwr_dist')
-      generate_barchart({{ g_action }}, '#g_action')
-      generate_barchart({{ g_artifact }}, '#g_artifact')
-      generate_barchart({{ g_creature }}, '#g_creature')
-      generate_barchart({{ g_upgrade }}, '#g_upgrade')
-      generate_barchart({{ g_amber }}, '#g_amber')
-      generate_barchart({{ top_action }}, '#top_action')
-      generate_barchart({{ top_artifact }}, '#top_artifact')
-      generate_barchart({{ top_creature }}, '#top_creature')
-      generate_barchart({{ top_upgrade }}, '#top_upgrade')
-      generate_barchart({{ top_amber }}, '#top_amber')
+      generate_barchart({{ power_list }}, "#pwr_dist")
+      generate_barchart({{ g_action }}, "#g_action")
+      generate_barchart({{ g_artifact }}, "#g_artifact")
+      generate_barchart({{ g_creature }}, "#g_creature")
+      generate_barchart({{ g_upgrade }}, "#g_upgrade")
+      generate_barchart({{ g_amber }}, "#g_amber")
+      generate_barchart({{ top_action }}, "#top_action")
+      generate_barchart({{ top_artifact }}, "#top_artifact")
+      generate_barchart({{ top_creature }}, "#top_creature")
+      generate_barchart({{ top_upgrade }}, "#top_upgrade")
+      generate_barchart({{ top_amber }}, "#top_amber")
 
       let card = document.querySelectorAll(".card")
-      for(let i=0;i<card.length;i++) {
-            card[i].addEventListener("click", function() {
-                alert("hello")
+        for(let i=0;i<card.length;i++) {
+            card[i].addEventListener("mouseenter", function() {
+                let url = this.dataset.value
+                url_str = "url(" + url + ")"
+                let card_img = document.createElement("img");
+                card_img.id = "card_img"
+                card_img.src = url;
+                card[i].appendChild(card_img);
+
             })
-      }
+            card[i].addEventListener("mouseleave", function() {
+                let child = document.getElementById("card_img")
+                card[i].removeChild(child)
+            })
+        }
 
-
+        
 
 
       let deck_id = document.querySelector("#deck_id").innerText
       axios.post("{% url 'kf_main:get_nodes' %}", {
-          "deck_id": deck_id
-          }, {
-              headers: {
-                  "X-CSRFToken": "{{ csrf_token }}"
-              },
-          }
-          ).then(function(response) {
-                      generate_force(response.data["percent_match"])
-                  })
+            "deck_id": deck_id
+            }, {
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+            }
+            ).then(function(response) {
+                        generate_force(response.data["percent_match"])
+                    })
 
 
       function make_pie(type_nums) {

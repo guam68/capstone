@@ -34,6 +34,8 @@
     justify-content: space-evenly;
 }
 
-/* #house {
-    margin: 0 100px;
-} */
+#card_img {
+    display: block;
+    position: absolute;
+    
+}

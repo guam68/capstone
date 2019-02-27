@@ -40,11 +40,20 @@ def deck_search(request):
         return HttpResponseRedirect(reverse('kf_main:deck_list') + '?search=' + deck_name)
 
 
+def get_card_img(request):
+    data = json.loads(request.body)
+    url = data['url']
+
+
+    
+    return HttpResponse('rawr')
+
+
 def deck_detail(request, deck_id):
 
     # deck = request.GET['id']
     data = kf.get_specific_deck(deck_id)
-    deck = Deck2.objects.get(id=deck_id)         # should be get
+    deck = Deck2.objects.get(id=deck_id)        
     power_list, type_nums = get_stats(data[1])
     g_action, g_artifact, g_creature, g_upgrade, g_amber = get_global_dist()
     top_action, top_artifact, top_creature, top_upgrade, top_amber = get_top_dist()
@@ -104,12 +113,12 @@ def get_stats(deck_cards):      # list of card ids
 
 
 def get_global_dist():
-    deck_list = Deck.objects.all()
+    deck_list = Deck2.objects.all()
     return (get_dist(deck_list))
             
             
 def get_top_dist():
-    deck_list = Deck.objects.filter(power_level__gt=1)
+    deck_list = Deck2.objects.filter(power_level__gt=1)
     top_decks = []
 
     for deck in deck_list:
