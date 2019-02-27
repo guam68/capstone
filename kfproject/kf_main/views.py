@@ -44,19 +44,22 @@ def deck_detail(request, deck_id):
 
     # deck = request.GET['id']
     data = kf.get_specific_deck(deck_id)
-    print('getting deck...')
-    deck_list = Deck2.objects.filter(id=deck_id)         # should be get
-    print('getting deck stats...')
+    deck = Deck2.objects.get(id=deck_id)         # should be get
     power_list, type_nums = get_stats(data[1])
-    print('getting global stats...')
     g_action, g_artifact, g_creature, g_upgrade, g_amber = get_global_dist()
-    print('getting top stats...')
     top_action, top_artifact, top_creature, top_upgrade, top_amber = get_top_dist()
-    print('getting nodes...')
+
+    card_objects = [] 
+    for card_id in data[1]:
+        card_objects.append(Card.objects.get(id=card_id))
+        
 
     context = {
-        'deck': deck_list[0],
-        'deck_card_list': data[1],
+        'deck': deck,
+        'house1': deck.house_list[0],
+        'house2': deck.house_list[1],
+        'house3': deck.house_list[2],
+        'deck_card_list': card_objects,
         'power_list': power_list,
         'type_nums': type_nums,
         'g_action': g_action,
@@ -69,7 +72,6 @@ def deck_detail(request, deck_id):
         'top_creature': top_creature,
         'top_upgrade': top_upgrade,
         'top_amber': top_amber,
-        # 'closest_decks': closest_decks
     }
 
     return render(request, 'kf_main/deck_detail.html', context)

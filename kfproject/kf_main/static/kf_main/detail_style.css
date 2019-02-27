@@ -9,8 +9,8 @@
 }
 
 #force {
-    height: 300px;
-    width: 500px;
+    height: 400px;
+    width: 600px;
 }
 
 .link {
@@ -29,3 +29,11 @@
     width: 500px;
 }
 
+#house_cards {
+    display:flex;
+    justify-content: space-evenly;
+}
+
+/* #house {
+    margin: 0 100px;
+} */
