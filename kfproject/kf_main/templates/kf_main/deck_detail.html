@@ -291,9 +291,28 @@
                     div .transition()
                         .duration(200)		
                         .style("opacity", .9)
-                    div .html(d.name + "<br/>" + d.percent)
+                    div .html("") 
                         .style("left", (d3v3.event.pageX) + "px")		
-                        .style("top", (d3v3.event.pageY - 28) + "px");
+                        .style("top", (d3v3.event.pageY - 28) + "px"); 
+
+                    axios.post("{% url 'kf_main:get_tooltip' %}", {
+                        "deck_id": d.name
+                    }, {
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}"
+                        },
+                    }
+                    ).then(function(response) {
+                        deck = response.data
+                        div .html(
+                                "<h3>" + deck.name + "</h3>" + 
+                                "<br/><b>Power Level:</b> " + deck.losses + 
+                                "<br/><b>Chains:</b> " + deck.losses +
+                                "<br/><b>Wins:</b> " + deck.wins +  
+                                "<br/><b>Losses:</b> " + deck.losses
+                            ) 
+                            })
+
               })
               .on("mouseout", mouseout)
               .on("click", function(d){

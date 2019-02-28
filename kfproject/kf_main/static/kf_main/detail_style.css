@@ -38,15 +38,15 @@
     position: relative;
 }
 
-
 div.tooltip {	
-    color: whitesmoke;
+    color:whitesmoke;
     position: absolute;			
     text-align: center;			
-    width: 400px;					
-    height: 100px;					
+    width: 180px;					
+    height: 150px;					
     padding: 2px;				
     font: 12px sans-serif;		
-    background: rgb(89, 94, 99);	
+    background: rgb(90, 92, 95);	
     pointer-events: none;			
 }
+

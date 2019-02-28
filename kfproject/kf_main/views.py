@@ -10,6 +10,7 @@ from collections import defaultdict
 
 import json
 from django.core import serializers
+from django.forms.models import model_to_dict
 
 from django.db import connection
 from psycopg2 import connect
@@ -40,18 +41,15 @@ def deck_search(request):
         return HttpResponseRedirect(reverse('kf_main:deck_list') + '?search=' + deck_name)
 
 
-def get_card_img(request):
+def get_tooltip(request):
     data = json.loads(request.body)
-    url = data['url']
-
-
-    
-    return HttpResponse('rawr')
+    deck = Deck2.objects.get(id=data['deck_id'])
+    deck_dict = model_to_dict(deck)
+    return JsonResponse(deck_dict)
 
 
 def deck_detail(request, deck_id):
 
-    # deck = request.GET['id']
     data = kf.get_specific_deck(deck_id)
     deck = Deck2.objects.get(id=deck_id)        
     power_list, type_nums = get_stats(data[1])
@@ -203,11 +201,8 @@ def get_avg_games():
 def get_nodes(request):
     # deck_id = request.GET('deck_id')
     data = json.loads(request.body)
-    print(data)
     deck_id = data['deck_id']
-    print()
-    print(deck_id)
-    print()
+    print('initial load')
     # cur = connection.cursor()
     # cur.execute('SELECT house FROM deck_house where deck_id = %s', (deck_id,))
     # houses = cur.fetchall()
