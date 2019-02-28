@@ -34,21 +34,19 @@
     justify-content: space-evenly;
 }
 
-#card_img {
-    display: block;
-    position: absolute;
-    
+#card {
+    position: relative;
 }
 
+
 div.tooltip {	
+    color: whitesmoke;
     position: absolute;			
     text-align: center;			
-    width: 60px;					
-    height: 28px;					
+    width: 400px;					
+    height: 100px;					
     padding: 2px;				
     font: 12px sans-serif;		
-    background: lightsteelblue;	
-    border: 0px;		
-    border-radius: 8px;			
+    background: rgb(89, 94, 99);	
     pointer-events: none;			
 }

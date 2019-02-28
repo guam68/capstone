@@ -114,10 +114,11 @@
             card[i].addEventListener("mouseenter", function() {
                 let url = this.dataset.value
                 url_str = "url(" + url + ")"
-                let card_img = document.createElement("img");
+                let card_img = document.createElement("img")
                 card_img.id = "card_img"
-                card_img.src = url;
-                card[i].appendChild(card_img);
+                card_img.src = url
+                card_img.style.position = "absolute"
+                card[i].appendChild(card_img)
 
             })
             card[i].addEventListener("mouseleave", function() {
@@ -286,15 +287,17 @@
               })
               .attr("percent", function(d) { return d.percent} )
               .attr("win_loss", function(d) { return d.win_loss} )
-              .on("mouseover", mouseover)
-              .on("mouseout", mouseout)
-              .on("click", function(d){
+              .on("mouseover", function(d) {
                     div .transition()
                         .duration(200)		
                         .style("opacity", .9)
                     div .html(d.name + "<br/>" + d.percent)
                         .style("left", (d3v3.event.pageX) + "px")		
                         .style("top", (d3v3.event.pageY - 28) + "px");
+              })
+              .on("mouseout", mouseout)
+              .on("click", function(d){
+                    
               })
               .call(force.drag);
 
@@ -324,27 +327,11 @@
           }
 
 
-          function mouseover() {
-              d3v3.select(this).select("circle").transition()
-                  .duration(500)
-                  .attr("r", function(d){
-                      if (d.percent == 100) {
-                          return 10
-                      } else {
-                          return ((d.percent/45)**7*1.5)
-                      }});	
-          }
-
-
           function mouseout() {
               d3v3.select(this).select("circle").transition()
-                  .duration(500)
-                  .attr("r", function(d){
-                      if (d.percent == 100) {
-                          return 10
-                      } else {
-                          return ((d.percent/45)**7)
-                      }});
+                    div .transition()
+                        .duration(200)		
+                        .style("opacity", 0)
           }
 
       }
