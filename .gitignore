@@ -107,5 +107,5 @@ venv.bak/
 credentials.py
 
 # Django
-migrations
-migrations_old
+# migrations
+# migrations_old

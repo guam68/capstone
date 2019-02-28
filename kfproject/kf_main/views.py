@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from . import credentials as cred 
-from .models import Deck, Card, Deck_Card, Deck_House, Deck2
+from .models import Deck, Card, Deck_Card, Deck_House, Deck2, Distribution
 from . import kf_data as kf
 from . import kf_data_v2 as kf2
 from django.db.models import Sum, Q
@@ -242,16 +242,27 @@ def get_nodes(request):
     return JsonResponse(percent_match)
 
 
+# def update_dist():
+#     print(Distribution.objects.get(id=1))
+#     g_action, g_artifact, g_creature, g_upgrade, g_amber = get_global_dist()
+#     top_action, top_artifact, top_creature, top_upgrade, top_amber = get_top_dist()
+
+
+#     if Distribution.objects.filter(id=1).exists():
+#         Distribution.objects.filter(id=1).update(action=g_action)
+#         Distribution.objects.filter(id=1).update(artifact=g_artifact)
+#         Distribution.objects.filter(id=1).update(creature=g_creature)
+#         Distribution.objects.filter(id=1).update(upgrade=g_upgrade)
+#         Distribution.objects.filter(id=1).update(amber=g_amber)
+#     else:
+#         dist = Distribution.objects.create(id=1, action=g_action, artifact=g_artifact, creature=g_creature, upgrade=g_upgrade, amber=g_amber)
+#         dist.save()
 
 
 
-    
 
 
-
-
-
-
+# update_dist()
 # kf2.set_main_data(kf2.page, kf2.site)
 # get_nodes('eb5d4c4a-5957-4276-ab9a-0d1b19f42e81')
 # get_top_dist()
