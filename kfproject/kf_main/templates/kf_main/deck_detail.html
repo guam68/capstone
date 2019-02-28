@@ -127,8 +127,6 @@
         }
 
         
-
-
       let deck_id = document.querySelector("#deck_id").innerText
       axios.post("{% url 'kf_main:get_nodes' %}", {
             "deck_id": deck_id
@@ -271,6 +269,10 @@
               .enter().append("line")
               .attr("class", "link");
 
+          let div = d3v3.select("#force").append("div")	
+            .attr("class", "tooltip")				
+            .style("opacity", 0);
+
           let node = svg.selectAll(".node")
               .data(force.nodes())
               .enter().append("g")
@@ -287,8 +289,12 @@
               .on("mouseover", mouseover)
               .on("mouseout", mouseout)
               .on("click", function(d){
-                  console.log(d);
-                  alert("You clicked on node " + d.name);
+                    div .transition()
+                        .duration(200)		
+                        .style("opacity", .9)
+                    div .html(d.name + "<br/>" + d.percent)
+                        .style("left", (d3v3.event.pageX) + "px")		
+                        .style("top", (d3v3.event.pageY - 28) + "px");
               })
               .call(force.drag);
 
@@ -326,7 +332,7 @@
                           return 10
                       } else {
                           return ((d.percent/45)**7*1.5)
-                      }});
+                      }});	
           }
 
 
