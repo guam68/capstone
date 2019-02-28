@@ -53,8 +53,10 @@ def deck_detail(request, deck_id):
     data = kf.get_specific_deck(deck_id)
     deck = Deck2.objects.get(id=deck_id)        
     power_list, type_nums = get_stats(data[1])
-    g_action, g_artifact, g_creature, g_upgrade, g_amber = get_global_dist()
-    top_action, top_artifact, top_creature, top_upgrade, top_amber = get_top_dist()
+    global_dist = model_to_dict(Distribution.objects.get(id=1))
+    top_dist = model_to_dict(Distribution.objects.get(id=2))
+    g_action, g_artifact, g_creature, g_upgrade, g_amber = global_dist['action'], global_dist['artifact'], global_dist['creature'], global_dist['upgrade'], global_dist['amber']
+    top_action, top_artifact, top_creature, top_upgrade, top_amber = top_dist['action'], top_dist['artifact'], top_dist['creature'], top_dist['upgrade'], top_dist['amber']
 
     card_objects = [] 
     for card_id in data[1]:
@@ -242,21 +244,29 @@ def get_nodes(request):
     return JsonResponse(percent_match)
 
 
-# def update_dist():
-#     print(Distribution.objects.get(id=1))
-#     g_action, g_artifact, g_creature, g_upgrade, g_amber = get_global_dist()
-#     top_action, top_artifact, top_creature, top_upgrade, top_amber = get_top_dist()
+def update_dist():
+    g_action, g_artifact, g_creature, g_upgrade, g_amber = get_global_dist()
+    top_action, top_artifact, top_creature, top_upgrade, top_amber = get_top_dist()
 
+    if Distribution.objects.filter(id=1).exists():
+        Distribution.objects.filter(id=1).update(action=g_action)
+        Distribution.objects.filter(id=1).update(artifact=g_artifact)
+        Distribution.objects.filter(id=1).update(creature=g_creature)
+        Distribution.objects.filter(id=1).update(upgrade=g_upgrade)
+        Distribution.objects.filter(id=1).update(amber=g_amber)
+    else:
+        dist = Distribution.objects.create(action=g_action, artifact=g_artifact, creature=g_creature, upgrade=g_upgrade, amber=g_amber, id=1)
+        dist.save()
 
-#     if Distribution.objects.filter(id=1).exists():
-#         Distribution.objects.filter(id=1).update(action=g_action)
-#         Distribution.objects.filter(id=1).update(artifact=g_artifact)
-#         Distribution.objects.filter(id=1).update(creature=g_creature)
-#         Distribution.objects.filter(id=1).update(upgrade=g_upgrade)
-#         Distribution.objects.filter(id=1).update(amber=g_amber)
-#     else:
-#         dist = Distribution.objects.create(id=1, action=g_action, artifact=g_artifact, creature=g_creature, upgrade=g_upgrade, amber=g_amber)
-#         dist.save()
+    if Distribution.objects.filter(id=2).exists():
+        Distribution.objects.filter(id=2).update(action=top_action)
+        Distribution.objects.filter(id=2).update(artifact=top_artifact)
+        Distribution.objects.filter(id=2).update(creature=top_creature)
+        Distribution.objects.filter(id=2).update(upgrade=top_upgrade)
+        Distribution.objects.filter(id=2).update(amber=top_amber)
+    else:
+        dist = Distribution.objects.create(action=top_action, artifact=top_artifact, creature=top_creature, upgrade=top_upgrade, amber=top_amber, id=2)
+        dist.save()
 
 
 

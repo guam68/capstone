@@ -24,6 +24,7 @@
     />
   </head>
   <body>
+    {% autoescape off %}
     Deck: {{ deck.name }} id: {{ deck.id }}
     {{ power_list }}
     {{ type_nums }}
@@ -80,7 +81,8 @@
         {% endif %} {% endfor %}
       </div>
     </div>
-
+    {% endautoescape %}
+    
     <div id="force"></div>
     <div id="type_pie"></div>
     <div class="bar_chart" id="pwr_dist"></div>
@@ -96,6 +98,7 @@
     <div class="bar_chart" id="top_amber"></div>
 
     <script>
+      {% autoescape off %}
       make_pie({{ type_nums|safe }})
       generate_barchart({{ power_list }}, "#pwr_dist")
       generate_barchart({{ g_action }}, "#g_action")
@@ -108,7 +111,7 @@
       generate_barchart({{ top_creature }}, "#top_creature")
       generate_barchart({{ top_upgrade }}, "#top_upgrade")
       generate_barchart({{ top_amber }}, "#top_amber")
-
+      {% endautoescape %}
       let card = document.querySelectorAll(".card")
         for(let i=0;i<card.length;i++) {
             card[i].addEventListener("mouseenter", function() {

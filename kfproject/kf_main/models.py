@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.contrib.postgres.fields import ArrayField
 
+
 class Card(models.Model):
     id = models.TextField(primary_key=True)
     card_title = models.TextField(blank=True, null=True)
