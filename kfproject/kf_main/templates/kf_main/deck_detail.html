@@ -24,10 +24,10 @@
     />
   </head>
   <body>
-    {% autoescape off %}
-    Deck: {{ deck.name }} id: {{ deck.id }}
+    {% autoescape off %} Deck: {{ deck.name }} id: {{ deck.id }}
     {{ power_list }}
     {{ type_nums }}
+    <div>Amber: {{ deck_amber }}</div>
     <div>{{ closest_decks }}</div>
     <div id="deck_id">{{ deck.id }}</div>
     <ul>
@@ -50,8 +50,6 @@
       <li>Upgrade: {{ top_upgrade }}</li>
       <li>Amber: {{ top_amber }}</li>
     </ul>
-
-    <img src="" alt="test_img" id="test_img">
 
     <div id="house_cards">
       <div class="house" id="house1">
@@ -82,7 +80,7 @@
       </div>
     </div>
     {% endautoescape %}
-    
+
     <div id="force"></div>
     <div id="type_pie"></div>
     <div class="bar_chart" id="pwr_dist"></div>
@@ -98,20 +96,28 @@
     <div class="bar_chart" id="top_amber"></div>
 
     <script>
+      let type_nums = {{ type_nums|safe }}
+      let num_action = type_nums[0]['amount']
+      let num_artifact = type_nums[1]['amount']
+      let num_creature = type_nums[2]['amount']
+      let num_upgrade = type_nums[3]['amount']
+
+
       {% autoescape off %}
       make_pie({{ type_nums|safe }})
-      generate_barchart({{ power_list }}, "#pwr_dist")
-      generate_barchart({{ g_action }}, "#g_action")
-      generate_barchart({{ g_artifact }}, "#g_artifact")
-      generate_barchart({{ g_creature }}, "#g_creature")
-      generate_barchart({{ g_upgrade }}, "#g_upgrade")
-      generate_barchart({{ g_amber }}, "#g_amber")
-      generate_barchart({{ top_action }}, "#top_action")
-      generate_barchart({{ top_artifact }}, "#top_artifact")
-      generate_barchart({{ top_creature }}, "#top_creature")
-      generate_barchart({{ top_upgrade }}, "#top_upgrade")
-      generate_barchart({{ top_amber }}, "#top_amber")
+      generate_barchart({{ power_list }}, "#pwr_dist", 0)
+      generate_barchart({{ g_action }}, "#g_action", num_action)
+      generate_barchart({{ g_artifact }}, "#g_artifact", num_artifact)
+      generate_barchart({{ g_creature }}, "#g_creature", num_creature)
+      generate_barchart({{ g_upgrade }}, "#g_upgrade", num_upgrade)
+      generate_barchart({{ g_amber }}, "#g_amber", {{ deck_amber }})
+      generate_barchart({{ top_action }}, "#top_action", num_action)
+      generate_barchart({{ top_artifact }}, "#top_artifact", num_artifact)
+      generate_barchart({{ top_creature }}, "#top_creature", num_creature)
+      generate_barchart({{ top_upgrade }}, "#top_upgrade", num_upgrade)
+      generate_barchart({{ top_amber }}, "#top_amber", {{ deck_amber }})
       {% endautoescape %}
+
       let card = document.querySelectorAll(".card")
         for(let i=0;i<card.length;i++) {
             card[i].addEventListener("mouseenter", function() {
@@ -130,7 +136,7 @@
             })
         }
 
-        
+
       let deck_id = document.querySelector("#deck_id").innerText
       axios.post("{% url 'kf_main:get_nodes' %}", {
             "deck_id": deck_id
@@ -196,7 +202,7 @@
       }
 
 
-      function generate_barchart(data_list, element_id) {
+      function generate_barchart(data_list, element_id, deck_amount) {
           let svg = d3v4.select(element_id).append("svg")
               .attr("height", "100%")
               .attr("width", "100%")
@@ -212,6 +218,16 @@
               .attr("width", bar_width -bar_width*.05)
               .attr("x", function(d, i) {return (i*bar_width)})
               .attr("y", function(d, i) {return 250 - scale(d)})
+
+              .data(Object.keys(data_list))
+              .attr("fill", function(d) {
+                    console.log(d +"/"+deck_amount)
+                    if (parseInt(deck_amount) == d){
+                        return "red"
+                    } else {
+                        return "blue"
+                    }
+              })
 
           svg.selectAll("text")
               .data(Object.keys(data_list))
@@ -273,8 +289,8 @@
               .enter().append("line")
               .attr("class", "link");
 
-          let div = d3v3.select("#force").append("div")	
-            .attr("class", "tooltip")				
+          let div = d3v3.select("#force").append("div")
+            .attr("class", "tooltip")
             .style("opacity", 0);
 
           let node = svg.selectAll(".node")
@@ -292,11 +308,11 @@
               .attr("win_loss", function(d) { return d.win_loss} )
               .on("mouseover", function(d) {
                     div .transition()
-                        .duration(200)		
+                        .duration(200)
                         .style("opacity", .9)
-                    div .html("") 
-                        .style("left", (d3v3.event.pageX) + "px")		
-                        .style("top", (d3v3.event.pageY - 28) + "px"); 
+                    div .html("")
+                        .style("left", (d3v3.event.pageX) + "px")
+                        .style("top", (d3v3.event.pageY - 28) + "px");
 
                     axios.post("{% url 'kf_main:get_tooltip' %}", {
                         "deck_id": d.name
@@ -307,19 +323,30 @@
                     }
                     ).then(function(response) {
                         deck = response.data
-                        div .html(
-                                "<h3>" + deck.name + "</h3>" + 
-                                "<br/><b>Power Level:</b> " + deck.losses + 
+                        if (d.percent == 100) {
+                            div .html(
+                                "<h3>" + deck.name + "</h3>" +
+                                "<b>Power Level:</b> " + deck.losses +
                                 "<br/><b>Chains:</b> " + deck.losses +
-                                "<br/><b>Wins:</b> " + deck.wins +  
+                                "<br/><b>Wins:</b> " + deck.wins +
                                 "<br/><b>Losses:</b> " + deck.losses
-                            ) 
+                            )
+                        } else {
+                        div .html(
+                                "<h3>" + deck.name + "</h3>" +
+                                "<b>Percent Match:</b> " + d.percent +
+                                "<br/><b>Power Level:</b> " + deck.losses +
+                                "<br/><b>Chains:</b> " + deck.losses +
+                                "<br/><b>Wins:</b> " + deck.wins +
+                                "<br/><b>Losses:</b> " + deck.losses
+                            )
+                        }
                             })
 
               })
               .on("mouseout", mouseout)
               .on("click", function(d){
-                    
+
               })
               .call(force.drag);
 
@@ -352,7 +379,7 @@
           function mouseout() {
               d3v3.select(this).select("circle").transition()
                     div .transition()
-                        .duration(200)		
+                        .duration(200)
                         .style("opacity", 0)
           }
 

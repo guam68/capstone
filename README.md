@@ -89,7 +89,7 @@ Once on the deck detail page, the user will be presented with the information an
 
 ### Week 3
 
-- [ ] Interaction and information for fdg nodes
+- [x] Interaction and information for fdg nodes
 - [ ] Make site look less ugly
 
 ### Post Class

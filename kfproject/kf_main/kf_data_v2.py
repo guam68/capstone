@@ -10,7 +10,7 @@ import sys
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import logging
 
-from .models import Deck, Card, Deck_Card, Deck_House, Current_Page, Deck2
+from .models import Card, Current_Page, Deck2
 
 
 

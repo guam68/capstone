@@ -1,7 +1,7 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from . import credentials as cred 
-from .models import Deck, Card, Deck_Card, Deck_House, Deck2, Distribution
+from .models import Card, Deck2, Distribution
 from . import kf_data as kf
 from . import kf_data_v2 as kf2
 from django.db.models import Sum, Q
@@ -52,7 +52,7 @@ def deck_detail(request, deck_id):
 
     data = kf.get_specific_deck(deck_id)
     deck = Deck2.objects.get(id=deck_id)        
-    power_list, type_nums = get_stats(data[1])
+    power_list, type_nums, deck_amber = get_stats(data[1])
     global_dist = model_to_dict(Distribution.objects.get(id=1))
     top_dist = model_to_dict(Distribution.objects.get(id=2))
     g_action, g_artifact, g_creature, g_upgrade, g_amber = global_dist['action'], global_dist['artifact'], global_dist['creature'], global_dist['upgrade'], global_dist['amber']
@@ -70,6 +70,7 @@ def deck_detail(request, deck_id):
         'house3': deck.house_list[2],
         'deck_card_list': card_objects,
         'power_list': power_list,
+        'deck_amber': deck_amber,
         'type_nums': type_nums,
         'g_action': g_action,
         'g_artifact': g_artifact,
@@ -89,27 +90,32 @@ def deck_detail(request, deck_id):
 def get_stats(deck_cards):      # list of card ids
     # _, deck_cards, _ = data
     power_list = {} 
+    deck_amber = 0
     type_nums = {
         'action': 0,
         'artifact': 0,
         'creature': 0,
         'upgrade': 0
     }
+    
     for card in deck_cards:     
         card_details = Card.objects.get(id=card)        
         type_nums[card_details.card_type.lower()] += 1       
+        deck_amber += card_details.amber
+
         if card_details.power == 0:
             continue
         elif card_details.power in power_list:
             power_list[card_details.power] += 1
         else:
             power_list[card_details.power] = 1
+        
 
     type_list = []
     for card_type in type_nums:
         type_list.append({'type': card_type, 'amount': type_nums[card_type]})
 
-    return (power_list, type_list)
+    return (power_list, type_list, deck_amber)
 
 
 def get_global_dist():
