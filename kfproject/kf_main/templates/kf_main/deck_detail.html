@@ -105,17 +105,17 @@
 
       {% autoescape off %}
       make_pie({{ type_nums|safe }})
-      generate_barchart({{ power_list }}, "#pwr_dist", 0)
-      generate_barchart({{ g_action }}, "#g_action", num_action)
-      generate_barchart({{ g_artifact }}, "#g_artifact", num_artifact)
-      generate_barchart({{ g_creature }}, "#g_creature", num_creature)
-      generate_barchart({{ g_upgrade }}, "#g_upgrade", num_upgrade)
-      generate_barchart({{ g_amber }}, "#g_amber", {{ deck_amber }})
-      generate_barchart({{ top_action }}, "#top_action", num_action)
-      generate_barchart({{ top_artifact }}, "#top_artifact", num_artifact)
-      generate_barchart({{ top_creature }}, "#top_creature", num_creature)
-      generate_barchart({{ top_upgrade }}, "#top_upgrade", num_upgrade)
-      generate_barchart({{ top_amber }}, "#top_amber", {{ deck_amber }})
+      generate_barchart({{ power_list }}, "#pwr_dist", 0, "Creature Power")
+      generate_barchart({{ g_action }}, "#g_action", num_action, "Actions")
+      generate_barchart({{ g_artifact }}, "#g_artifact", num_artifact, "Artifacts")
+      generate_barchart({{ g_creature }}, "#g_creature", num_creature, "Creatures")
+      generate_barchart({{ g_upgrade }}, "#g_upgrade", num_upgrade, "Upgrades")
+      generate_barchart({{ g_amber }}, "#g_amber", {{ deck_amber }}, "Amber")
+      generate_barchart({{ top_action }}, "#top_action", num_action, "Actions")
+      generate_barchart({{ top_artifact }}, "#top_artifact", num_artifact, "Artifacts")
+      generate_barchart({{ top_creature }}, "#top_creature", num_creature, "Creatures")
+      generate_barchart({{ top_upgrade }}, "#top_upgrade", num_upgrade, "Upgrades")
+      generate_barchart({{ top_amber }}, "#top_amber", {{ deck_amber }}, "Amber")
       {% endautoescape %}
 
       let card = document.querySelectorAll(".card")
@@ -202,40 +202,52 @@
       }
 
 
-      function generate_barchart(data_list, element_id, deck_amount) {
+      function generate_barchart(data_list, element_id, deck_amount, title) {
+          let width = 500
+          let height = 300
+          console.log(Object.values(data_list).length)
           let svg = d3v4.select(element_id).append("svg")
               .attr("height", "100%")
               .attr("width", "100%")
 
-          let bar_width = 500 / Object.values(data_list).length;
-          let scale = d3v4.scaleLinear().domain([0, d3v4.max(Object.values(data_list))]).range([0, 250])
+          let bar_width = width / Object.values(data_list).length;
+          let scale = d3v4.scaleLinear().domain([0, d3v4.max(Object.values(data_list))]).range([0, 200])
 
           svg.selectAll("rect")
           .data(Object.values(data_list))
           .enter().append("rect")
               .attr("class", "bar")
               .attr("height", function (d) {return scale(d);})
-              .attr("width", bar_width -bar_width*.05)
+              .attr("width", bar_width*.95)
               .attr("x", function(d, i) {return (i*bar_width)})
               .attr("y", function(d, i) {return 250 - scale(d)})
 
               .data(Object.keys(data_list))
               .attr("fill", function(d) {
-                    console.log(d +"/"+deck_amount)
-                    if (parseInt(deck_amount) == d){
+                    if (deck_amount == d){
                         return "red"
                     } else {
                         return "blue"
                     }
               })
-
           svg.selectAll("text")
               .data(Object.keys(data_list))
               .enter().append("text")
               .text(function(d) {return d})
                   .attr("class", "bar_text")
-                  .attr("x", function(d, i) {return (i*bar_width)})
+                  .attr("text-anchor", "middle")
+                  .attr("x", function(d, i) {return (i*bar_width)+bar_width/2})
                   .attr("y", 250 + 20)
+
+            
+          svg.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", "translate(" + width/2 +",0)")
+            .attr("x", 0)
+            .attr("y", 25)
+            .attr("font-size", "24px")
+            .text(title)
+
       }
 
 

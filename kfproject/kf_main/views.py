@@ -174,15 +174,15 @@ def get_dist(deck_list):
 
 # Average chains for decks with registered games   
 def get_chains():
-    total_chains = Deck.objects.aggregate(Sum('chains'))
-    deck_count = Deck.objects.filter(Q(wins__gt=0) | Q(losses__gt=0)).count()
+    total_chains = Deck2.objects.aggregate(Sum('chains'))
+    deck_count = Deck2.objects.filter(Q(wins__gt=0) | Q(losses__gt=0)).count()
 
     return total_chains['chains__sum']/deck_count
 
 
 # Average win/loss ratio for decks with registered games 
 def get_win_loss():
-    deck_list = Deck.objects.filter(Q(wins__gt=0) | Q(losses__gt=0))
+    deck_list = Deck2.objects.filter(Q(wins__gt=0) | Q(losses__gt=0))
     win_loss_total = 0
 
     for deck in deck_list:
@@ -196,7 +196,7 @@ def get_win_loss():
 
 # Average OP games for decks with registered games
 def get_avg_games():
-    deck_list = Deck.objects.filter(Q(wins__gt=0) | Q(losses__gt=0))
+    deck_list = Deck2.objects.filter(Q(wins__gt=0) | Q(losses__gt=0))
     total_games = 0
 
     for deck in deck_list:
@@ -275,9 +275,65 @@ def update_dist():
         dist.save()
 
 
+# def get_top_house_cards(house):
+#     deck_count = Deck2.objects.filter(Q(wins__gt=0) | Q(losses__gt=0)).count()
+#     deck_list = Deck2.objects.filter(power_level__gt=1)
+#     top_decks = []
+#     print(deck_count)
+#     print(len(deck_list))
+
+#     for deck in deck_list:
+#         if deck.losses != 0 and deck.power_level == 2:
+#             if deck.wins / deck.losses >= 4:
+#                 top_decks.append(deck) 
+#         else:
+#             top_decks.append(deck)
+
+#     print(len(top_decks))
+
+def get_top100():
+    top100 = []
+    pwr_dict ={}
+
+    for i in range(2,11):
+        pwr_list = Deck2.objects.filter(power_level=i)
+        pwr_dict[i] = pwr_list
 
 
+    for power in pwr_dict:
+        ordered_list = []
+        for deck in pwr_dict[power]:
+            if not ordered_list:
+                ordered_list.append(deck)
+            else:
+                for i, top_deck in enumerate(ordered_list):
+                    if deck.chains > top_deck.chains:
+                        ordered_list.insert(i, deck)
+                        break
+                    elif deck.chains == top_deck.chains:
+                        if (deck.wins/(deck.wins+deck.losses) > top_deck.wins/(top_deck.wins+top_deck.losses) or 
+                        deck.wins/(deck.wins+deck.losses) == top_deck.wins/(top_deck.wins+top_deck.losses)):
+                            ordered_list.insert(i, deck)
+                            break
+            if deck not in ordered_list:
+                ordered_list.append(deck)
 
+        top100 = ordered_list + top100
+
+    print(len(top100))
+    top100 = top100[:100]
+
+    for deck in top100:
+        print(str(deck.power_level)+'--'+str(deck.chains) +'--'+ str(int(deck.wins*100/(deck.wins+deck.losses))))
+    
+    return top100
+                
+                
+
+    
+
+
+# get_top100()
 # update_dist()
 # kf2.set_main_data(kf2.page, kf2.site)
 # get_nodes('eb5d4c4a-5957-4276-ab9a-0d1b19f42e81')
