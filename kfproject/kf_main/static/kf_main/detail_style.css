@@ -1,5 +1,5 @@
 body {
-    color:whitesmoke;
+    color:black;
 }
 #deck_wrap {
     display: flex;
@@ -10,7 +10,15 @@ body {
 .hex_wrap {
     margin-left: 120px;
 }
+
 .bar_chart {
+    display:none;
+    height: 300px;
+    width: 600px;
+}
+
+.bar_chart_top {
+    display:none;
     height: 300px;
     width: 600px;
 }
@@ -36,7 +44,10 @@ body {
     width: 500px;
 }
 
+.mySlides {}
+
 #house_cards {
+    color: whitesmoke;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     display:flex;
     justify-content: space-evenly;

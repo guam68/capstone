@@ -24,31 +24,26 @@
     />
   </head>
   <body>
-     {% autoescape off %} 
+    {% autoescape off %}
     <h1>{{ deck.name }}</h1>
+    <div id="deck_id" hidden>{{ deck.id }}</div>
     <div id="deck_wrap">
       <div class="hex_wrap">
         <div class="hex_top"></div>
         <div class="hex">
-            Power: {{ deck.power_level }}
-            Wins: {{ deck.wins }}
-            Loses: {{ deck.losses}}
-            Chains: {{ deck.chains }}
-            Amber: {{ deck_amber }}
+          Power: {{ deck.power_level }} Wins: {{ deck.wins }} Loses:
+          {{ deck.losses }} Chains: {{ deck.chains }} Amber: {{ deck_amber }}
         </div>
         <div class="hex_bottom"></div>
       </div>
 
       <div id="type_pie"></div>
-      <div class="bar_chart" id="pwr_dist"></div>
+      <div class="power_dist" id="pwr_dist"></div>
     </div>
-
-    
-    
 
     <div id="house_cards">
       <div class="house" id="house1">
-        <h1>{{ house1 }}</h1>
+        <h1 id="h1_name">{{ house1 }}</h1>
         {% for card in deck_card_list %} {% if card.house == house1 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
@@ -75,45 +70,70 @@
       </div>
     </div>
 
-
     {% endautoescape %}
 
-    <div class="bar_chart" id="g_action"></div>
-    <div class="bar_chart" id="g_artifact"></div>
-    <div class="bar_chart" id="g_creature"></div>
-    <div class="bar_chart" id="g_upgrade"></div>
-    <div class="bar_chart" id="g_amber"></div>
-    <div class="bar_chart" id="top_action"></div>
-    <div class="bar_chart" id="top_artifact"></div>
-    <div class="bar_chart" id="top_creature"></div>
-    <div class="bar_chart" id="top_upgrade"></div>
-    <div class="bar_chart" id="top_amber"></div>
+    <div class="w3-content w3-display-container" style="max-width:800px">
+      <div class="bar_chart" id="g_action"></div>
+      <div class="bar_chart" id="g_artifact"></div>
+      <div class="bar_chart" id="g_creature"></div>
+      <div class="bar_chart" id="g_upgrade"></div>
+      <div class="bar_chart" id="g_amber"></div>
+
+      <div class="w3-left w3-hover-text-black" onclick="plusDivs(-1, 'global')">
+        &#10094;
+      </div>
+      <div class="w3-right w3-hover-text-black" onclick="plusDivs(1, 'global')">
+        &#10095;
+      </div>
+    </div>
+
+    <div class="w3-content w3-display-container" style="max-width:800px">
+      <div class="bar_chart_top" id="top_action"></div>
+      <div class="bar_chart_top" id="top_artifact"></div>
+      <div class="bar_chart_top" id="top_creature"></div>
+      <div class="bar_chart_top" id="top_upgrade"></div>
+      <div class="bar_chart_top" id="top_amber"></div>
+
+      <div class="w3-left w3-hover-text-black" onclick="plusDivs(-1, 'top')">
+        &#10094;
+      </div>
+      <div class="w3-right w3-hover-text-black" onclick="plusDivs(1, 'top')">
+        &#10095;
+      </div>
+    </div>
+
     <div id="force"></div>
 
     <script>
-      let type_nums = {{ type_nums|safe }}
-      let num_action = type_nums[0]['amount']
-      let num_artifact = type_nums[1]['amount']
-      let num_creature = type_nums[2]['amount']
-      let num_upgrade = type_nums[3]['amount']
+        let slide_idx = 1;
+        let slide_idx_top = 1;
+
+        showDivs(slide_idx, "global");
+        showDivs(slide_idx_top, "top");
+
+        let type_nums = {{ type_nums|safe }}
+        let num_action = type_nums[0]['amount']
+        let num_artifact = type_nums[1]['amount']
+        let num_creature = type_nums[2]['amount']
+        let num_upgrade = type_nums[3]['amount']
 
 
-      {% autoescape off %}
-      make_pie({{ type_nums|safe }})
-      generate_barchart({{ power_list }}, "#pwr_dist", 0, "Creature Power")
-      generate_barchart({{ g_action }}, "#g_action", num_action, "Actions")
-      generate_barchart({{ g_artifact }}, "#g_artifact", num_artifact, "Artifacts")
-      generate_barchart({{ g_creature }}, "#g_creature", num_creature, "Creatures")
-      generate_barchart({{ g_upgrade }}, "#g_upgrade", num_upgrade, "Upgrades")
-      generate_barchart({{ g_amber }}, "#g_amber", {{ deck_amber }}, "Amber")
-      generate_barchart({{ top_action }}, "#top_action", num_action, "Actions")
-      generate_barchart({{ top_artifact }}, "#top_artifact", num_artifact, "Artifacts")
-      generate_barchart({{ top_creature }}, "#top_creature", num_creature, "Creatures")
-      generate_barchart({{ top_upgrade }}, "#top_upgrade", num_upgrade, "Upgrades")
-      generate_barchart({{ top_amber }}, "#top_amber", {{ deck_amber }}, "Amber")
-      {% endautoescape %}
+        {% autoescape off %}
+        make_pie({{ type_nums|safe }})
+        generate_barchart({{ power_list }}, "#pwr_dist", 0, "Creature Power")
+        generate_barchart({{ g_action }}, "#g_action", num_action, "Actions")
+        generate_barchart({{ g_artifact }}, "#g_artifact", num_artifact, "Artifacts")
+        generate_barchart({{ g_creature }}, "#g_creature", num_creature, "Creatures")
+        generate_barchart({{ g_upgrade }}, "#g_upgrade", num_upgrade, "Upgrades")
+        generate_barchart({{ g_amber }}, "#g_amber", {{ deck_amber }}, "Amber")
+        generate_barchart({{ top_action }}, "#top_action", num_action, "Actions")
+        generate_barchart({{ top_artifact }}, "#top_artifact", num_artifact, "Artifacts")
+        generate_barchart({{ top_creature }}, "#top_creature", num_creature, "Creatures")
+        generate_barchart({{ top_upgrade }}, "#top_upgrade", num_upgrade, "Upgrades")
+        generate_barchart({{ top_amber }}, "#top_amber", {{ deck_amber }}, "Amber")
+        {% endautoescape %}
 
-      let card = document.querySelectorAll(".card")
+        let card = document.querySelectorAll(".card")
         for(let i=0;i<card.length;i++) {
             card[i].addEventListener("mouseenter", function() {
                 let url = this.dataset.value
@@ -132,265 +152,295 @@
         }
 
 
-      let deck_id = document.querySelector("#deck_id").innerText
-      axios.post("{% url 'kf_main:get_nodes' %}", {
-            "deck_id": deck_id
-            }, {
-                headers: {
-                    "X-CSRFToken": "{{ csrf_token }}"
-                },
-            }
-            ).then(function(response) {
-                        generate_force(response.data["percent_match"])
+        let deck_id = document.querySelector("#deck_id").innerText
+        axios.post("{% url 'kf_main:get_nodes' %}", {
+                "deck_id": deck_id
+                }, {
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                }
+                ).then(function(response) {
+                            generate_force(response.data["percent_match"])
+                        })
+
+
+        function make_pie(type_nums) {
+            let height = 300
+            let width = 500
+            let radius = Math.min(width, height) / 3
+            let color = d3v4.scaleOrdinal(["#4daf4a","#377eb8","#ff7f00","#984ea3"])
+
+            let svg = d3v4.select("#type_pie")
+                .append("svg")
+                .attr("height", height)
+                .attr("width", width)
+                .append("g")
+                .attr("transform", "translate(" + width/2 + "," + height/2 + ")")
+
+            let arc = d3v4.arc()
+                .outerRadius(radius)
+                .innerRadius(radius - radius*.3)
+
+            let pie = d3v4.pie()
+                .value(function(d){
+                    return d.amount
+                })
+                .sort(null)
+
+            let label = d3v4.arc()
+                .outerRadius(radius)
+                .innerRadius(radius + 50)
+
+            let path = svg.selectAll("path")
+                .data(pie(type_nums))
+                .enter()
+                .append("path")
+                .attr("d", arc)
+                .attr("fill", function(d) {
+                    return color(d.data.type)
+                })
+
+            let text = svg.selectAll("text")
+                .data(pie(type_nums))
+                .enter()
+                .append("text")
+                .attr("transform", function(d) {
+                        return "translate(" + label.centroid(d) + ")"
+                })
+                .attr("text-anchor", "middle")
+                .text(function(d) {
+                        return d.data.type
                     })
+                .style("fill", "black");
+
+        }
 
 
-      function make_pie(type_nums) {
-          let height = 300
-          let width = 500
-          let radius = Math.min(width, height) / 3
-          let color = d3v4.scaleOrdinal(["#4daf4a","#377eb8","#ff7f00","#984ea3"])
+        function generate_barchart(data_list, element_id, deck_amount, title) {
+            let width = 500
+            let height = 300
+            console.log(Object.values(data_list).length)
+            let svg = d3v4.select(element_id).append("svg")
+                .attr("height", "100%")
+                .attr("width", "100%")
 
-          let svg = d3v4.select("#type_pie")
-              .append("svg")
-              .attr("height", height)
-              .attr("width", width)
-              .append("g")
-              .attr("transform", "translate(" + width/2 + "," + height/2 + ")")
+            let bar_width = width / Object.values(data_list).length;
+            let scale = d3v4.scaleLinear().domain([0, d3v4.max(Object.values(data_list))]).range([0, 200])
 
-          let arc = d3v4.arc()
-              .outerRadius(radius)
-              .innerRadius(radius - radius*.3)
+            svg.selectAll("rect")
+            .data(Object.values(data_list))
+            .enter().append("rect")
+                .attr("class", "bar")
+                .attr("height", function (d) {return scale(d);})
+                .attr("width", bar_width*.95)
+                .attr("x", function(d, i) {return (i*bar_width)})
+                .attr("y", function(d, i) {return 250 - scale(d)})
 
-          let pie = d3v4.pie()
-              .value(function(d){
-                  return d.amount
-              })
-              .sort(null)
-
-          let label = d3v4.arc()
-              .outerRadius(radius)
-              .innerRadius(radius + 50)
-
-          let path = svg.selectAll("path")
-              .data(pie(type_nums))
-              .enter()
-              .append("path")
-              .attr("d", arc)
-              .attr("fill", function(d) {
-                  return color(d.data.type)
-              })
-
-          let text = svg.selectAll("text")
-              .data(pie(type_nums))
-              .enter()
-              .append("text")
-              .attr("transform", function(d) {
-                      return "translate(" + label.centroid(d) + ")"
-              })
-              .attr("text-anchor", "middle")
-              .text(function(d) {
-                      return d.data.type
-                  })
-              .style("fill", "black");
-
-      }
-
-
-      function generate_barchart(data_list, element_id, deck_amount, title) {
-          let width = 500
-          let height = 300
-          console.log(Object.values(data_list).length)
-          let svg = d3v4.select(element_id).append("svg")
-              .attr("height", "100%")
-              .attr("width", "100%")
-
-          let bar_width = width / Object.values(data_list).length;
-          let scale = d3v4.scaleLinear().domain([0, d3v4.max(Object.values(data_list))]).range([0, 200])
-
-          svg.selectAll("rect")
-          .data(Object.values(data_list))
-          .enter().append("rect")
-              .attr("class", "bar")
-              .attr("height", function (d) {return scale(d);})
-              .attr("width", bar_width*.95)
-              .attr("x", function(d, i) {return (i*bar_width)})
-              .attr("y", function(d, i) {return 250 - scale(d)})
-
-              .data(Object.keys(data_list))
-              .attr("fill", function(d) {
-                    if (deck_amount == d){
-                        return "red"
-                    } else {
-                        return "blue"
-                    }
-              })
-          svg.selectAll("text")
-              .data(Object.keys(data_list))
-              .enter().append("text")
-              .text(function(d) {return d})
-                  .attr("class", "bar_text")
-                  .attr("text-anchor", "middle")
-                  .attr("x", function(d, i) {return (i*bar_width)+bar_width/2})
-                  .attr("y", 250 + 20)
-
-
-          svg.append("text")
-            .attr("text-anchor", "middle")
-            .attr("transform", "translate(" + width/2 +",0)")
-            .attr("x", 0)
-            .attr("y", 25)
-            .attr("font-size", "24px")
-            .text(title)
-
-      }
-
-
-      function generate_force(closest_decks) {
-          let links = []
-
-          for (let i=0; i < closest_decks.length; i++) {
-              let wins = closest_decks[i][2]
-              let losses = closest_decks[i][3]
-
-              if (losses != 0){
-                  win_loss =  wins / losses
-              }
-              else {win_loss = wins}
-
-              data_row = {
-                  source: closest_decks[0][1],
-                  target: closest_decks[i][1],
-                  percent: closest_decks[i][0],
-                  win_loss: win_loss
-              }
-              links.push(data_row);
-          }
-          let nodes = {}
-
-          links.forEach(function(link) {
-          link.source = nodes[link.source] ||
-              (nodes[link.source] = {name: link.source, percent: link.percent, win_loss: link.win_loss});
-          link.target = nodes[link.target] ||
-              (nodes[link.target] = {name: link.target, percent: link.percent, win_loss: link.win_loss});
-          });
-
-          let width = 600
-          let height = 400
-
-          let force = d3v3.layout.force()
-              .nodes(d3v3.values(nodes))
-              .links(links)
-              .size([width, height])
-              .linkDistance(80)
-              .charge(-800)
-              .on("tick", tick)
-              .start();
-
-          let svg = d3v3.select("#force").append("svg")
-              .attr("width", width)
-              .attr("height", height);
-
-          let link = svg.selectAll(".link")
-              .data(force.links())
-              .enter().append("line")
-              .attr("class", "link");
-
-          let div = d3v3.select("#force").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
-
-          let node = svg.selectAll(".node")
-              .data(force.nodes())
-              .enter().append("g")
-              .attr("class", "node")
-              .style("fill", function(d) {
-                  if (d.win_loss < 0) {
-                      return "#b30000"
-                  } else if (d.win_loss > 0){
-                       return "#00cc00"
-                  } else { return "#666666"}
-              })
-              .attr("percent", function(d) { return d.percent} )
-              .attr("win_loss", function(d) { return d.win_loss} )
-              .on("mouseover", function(d) {
-                    div .transition()
-                        .duration(200)
-                        .style("opacity", .9)
-                    div .html("")
-                        .style("left", (d3v3.event.pageX) + "px")
-                        .style("top", (d3v3.event.pageY - 28) + "px");
-
-                    axios.post("{% url 'kf_main:get_tooltip' %}", {
-                        "deck_id": d.name
-                    }, {
-                        headers: {
-                            "X-CSRFToken": "{{ csrf_token }}"
-                        },
-                    }
-                    ).then(function(response) {
-                        deck = response.data
-                        if (d.percent == 100) {
-                            div .html(
-                                "<h3>" + deck.name + "</h3>" +
-                                "<b>Power Level:</b> " + deck.power_level +
-                                "<br/><b>Chains:</b> " + deck.chains +
-                                "<br/><b>Wins:</b> " + deck.wins +
-                                "<br/><b>Losses:</b> " + deck.losses
-                            )
+                .data(Object.keys(data_list))
+                .attr("fill", function(d) {
+                        if (deck_amount == d){
+                            return "red"
                         } else {
-                        div .html(
-                                "<h3>" + deck.name + "</h3>" +
-                                "<b>Percent Match:</b> " + d.percent +
-                                "<br/><b>Power Level:</b> " + deck.power_level +
-                                "<br/><b>Chains:</b> " + deck.chains +
-                                "<br/><b>Wins:</b> " + deck.wins +
-                                "<br/><b>Losses:</b> " + deck.losses
-                            )
+                            return "blue"
                         }
-                            })
-
-              })
-              .on("mouseout", mouseout)
-              .on("click", function(d){
-
-              })
-              .call(force.drag);
-
-          node.append("circle")
-              .attr("r", function(d){
-                  if (d.percent == 100) {
-                      return 10
-                  } else {
-                      return ((d.percent/45)**7)
-                  }})
-
-          // node.append("text")
-          //     .attr("x", 12)
-          //     .attr("dy", ".35em")
-          //     .text(function(d) { return d.name; });
+                })
+            svg.selectAll("text")
+                .data(Object.keys(data_list))
+                .enter().append("text")
+                .text(function(d) {return d})
+                    .attr("class", "bar_text")
+                    .attr("text-anchor", "middle")
+                    .attr("x", function(d, i) {return (i*bar_width)+bar_width/2})
+                    .attr("y", 250 + 20)
 
 
-          function tick() {
-              link
-                  .attr("x1", function(d) { return d.source.x; })
-                  .attr("y1", function(d) { return d.source.y; })
-                  .attr("x2", function(d) { return d.target.x; })
-                  .attr("y2", function(d) { return d.target.y; });
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "translate(" + width/2 +",0)")
+                .attr("x", 0)
+                .attr("y", 25)
+                .attr("font-size", "24px")
+                .text(title)
 
-              node
-                  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-          }
+        }
 
 
-          function mouseout() {
-              d3v3.select(this).select("circle").transition()
-                    div .transition()
-                        .duration(200)
-                        .style("opacity", 0)
-          }
+        function generate_force(closest_decks) {
+            let links = []
 
-      }
+            for (let i=0; i < closest_decks.length; i++) {
+                let wins = closest_decks[i][2]
+                let losses = closest_decks[i][3]
+
+                if (losses != 0){
+                    win_loss =  wins / losses
+                }
+                else {win_loss = wins}
+
+                data_row = {
+                    source: closest_decks[0][1],
+                    target: closest_decks[i][1],
+                    percent: closest_decks[i][0],
+                    win_loss: win_loss
+                }
+                links.push(data_row);
+            }
+            let nodes = {}
+
+            links.forEach(function(link) {
+            link.source = nodes[link.source] ||
+                (nodes[link.source] = {name: link.source, percent: link.percent, win_loss: link.win_loss});
+            link.target = nodes[link.target] ||
+                (nodes[link.target] = {name: link.target, percent: link.percent, win_loss: link.win_loss});
+            });
+
+            let width = 600
+            let height = 400
+
+            let force = d3v3.layout.force()
+                .nodes(d3v3.values(nodes))
+                .links(links)
+                .size([width, height])
+                .linkDistance(80)
+                .charge(-800)
+                .on("tick", tick)
+                .start();
+
+            let svg = d3v3.select("#force").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            let link = svg.selectAll(".link")
+                .data(force.links())
+                .enter().append("line")
+                .attr("class", "link");
+
+            let div = d3v3.select("#force").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            let node = svg.selectAll(".node")
+                .data(force.nodes())
+                .enter().append("g")
+                .attr("class", "node")
+                .style("fill", function(d) {
+                    if (d.win_loss < 0) {
+                        return "#b30000"
+                    } else if (d.win_loss > 0){
+                            return "#00cc00"
+                    } else { return "#666666"}
+                })
+                .attr("percent", function(d) { return d.percent} )
+                .attr("win_loss", function(d) { return d.win_loss} )
+                .on("mouseover", function(d) {
+                        div .transition()
+                            .duration(200)
+                            .style("opacity", .9)
+                        div .html("")
+                            .style("left", (d3v3.event.pageX) + "px")
+                            .style("top", (d3v3.event.pageY - 28) + "px");
+
+                        axios.post("{% url 'kf_main:get_tooltip' %}", {
+                            "deck_id": d.name
+                        }, {
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                        }
+                        ).then(function(response) {
+                            deck = response.data
+                            if (d.percent == 100) {
+                                div .html(
+                                    "<h3>" + deck.name + "</h3>" +
+                                    "<b>Power Level:</b> " + deck.power_level +
+                                    "<br/><b>Chains:</b> " + deck.chains +
+                                    "<br/><b>Wins:</b> " + deck.wins +
+                                    "<br/><b>Losses:</b> " + deck.losses
+                                )
+                            } else {
+                            div .html(
+                                    "<h3>" + deck.name + "</h3>" +
+                                    "<b>Percent Match:</b> " + d.percent +
+                                    "<br/><b>Power Level:</b> " + deck.power_level +
+                                    "<br/><b>Chains:</b> " + deck.chains +
+                                    "<br/><b>Wins:</b> " + deck.wins +
+                                    "<br/><b>Losses:</b> " + deck.losses
+                                )
+                            }
+                                })
+
+                })
+                .on("mouseout", mouseout)
+                .on("click", function(d){
+
+                })
+                .call(force.drag);
+
+            node.append("circle")
+                .attr("r", function(d){
+                    if (d.percent == 100) {
+                        return 10
+                    } else {
+                        return ((d.percent/45)**7)
+                    }})
+
+            // node.append("text")
+            //     .attr("x", 12)
+            //     .attr("dy", ".35em")
+            //     .text(function(d) { return d.name; });
+
+
+            function tick() {
+                link
+                    .attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+                node
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+            }
+
+
+            function mouseout() {
+                d3v3.select(this).select("circle").transition()
+                        div .transition()
+                            .duration(200)
+                            .style("opacity", 0)
+            }
+
+        }
+
+
+        function plusDivs(n, current_div) {
+            if (current_div == "global") {
+                showDivs(slide_idx += n, current_div);
+            } else {
+                showDivs(slide_idx_top += n, current_div);
+            }
+        }
+
+
+        function showDivs(n, current_div) {
+            if (current_div == "global") {
+                let cur_div = document.querySelectorAll(".bar_chart");
+                if (n > cur_div.length) {slide_idx = 1}
+                if (n < 1) {slide_idx = cur_div.length}
+                for (let i = 0; i < cur_div.length; i++) {
+                cur_div[i].style.display = "none";
+                }
+                cur_div[slide_idx-1].style.display = "block";
+            }
+            else {
+                let cur_div = document.querySelectorAll(".bar_chart_top");
+                if (n > cur_div.length) {slide_idx_top = 1}
+                if (n < 1) {slide_idx_top = cur_div.length}
+                for (let i = 0; i < cur_div.length; i++) {
+                cur_div[i].style.display = "none";
+                }
+                cur_div[slide_idx_top-1].style.display = "block";  }
+        }
     </script>
   </body>
 </html>
