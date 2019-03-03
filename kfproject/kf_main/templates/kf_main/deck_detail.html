@@ -24,36 +24,31 @@
     />
   </head>
   <body>
-    {% autoescape off %} Deck: {{ deck.name }} id: {{ deck.id }}
-    {{ power_list }}
-    {{ type_nums }}
-    <div>Amber: {{ deck_amber }}</div>
-    <div>{{ closest_decks }}</div>
-    <div id="deck_id">{{ deck.id }}</div>
-    <ul>
-      <h3>
-        Global
-      </h3>
-      <li>Action: {{ g_action }}</li>
-      <li>Artifact: {{ g_artifact }}</li>
-      <li>Creature: {{ g_creature }}</li>
-      <li>Upgrade: {{ g_upgrade }}</li>
-      <li>Amber: {{ g_amber }}</li>
-    </ul>
-    <ul>
-      <h3>
-        Top
-      </h3>
-      <li>Action: {{ top_action }}</li>
-      <li>Artifact: {{ top_artifact }}</li>
-      <li>Creature: {{ top_creature }}</li>
-      <li>Upgrade: {{ top_upgrade }}</li>
-      <li>Amber: {{ top_amber }}</li>
-    </ul>
+     {% autoescape off %} 
+    <h1>{{ deck.name }}</h1>
+    <div id="deck_wrap">
+      <div class="hex_wrap">
+        <div class="hex_top"></div>
+        <div class="hex">
+            Power: {{ deck.power_level }}
+            Wins: {{ deck.wins }}
+            Loses: {{ deck.losses}}
+            Chains: {{ deck.chains }}
+            Amber: {{ deck_amber }}
+        </div>
+        <div class="hex_bottom"></div>
+      </div>
+
+      <div id="type_pie"></div>
+      <div class="bar_chart" id="pwr_dist"></div>
+    </div>
+
+    
+    
 
     <div id="house_cards">
       <div class="house" id="house1">
-        <p>{{ house1 }}</p>
+        <h1>{{ house1 }}</h1>
         {% for card in deck_card_list %} {% if card.house == house1 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
@@ -62,7 +57,7 @@
       </div>
 
       <div class="house" id="house2">
-        <p>{{ house2 }}</p>
+        <h1>{{ house2 }}</h1>
         {% for card in deck_card_list %} {% if card.house == house2 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
@@ -71,7 +66,7 @@
       </div>
 
       <div class="house" id="house3">
-        <p>{{ house3 }}</p>
+        <h1>{{ house3 }}</h1>
         {% for card in deck_card_list %} {% if card.house == house3 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
@@ -79,11 +74,10 @@
         {% endif %} {% endfor %}
       </div>
     </div>
+
+
     {% endautoescape %}
 
-    <div id="force"></div>
-    <div id="type_pie"></div>
-    <div class="bar_chart" id="pwr_dist"></div>
     <div class="bar_chart" id="g_action"></div>
     <div class="bar_chart" id="g_artifact"></div>
     <div class="bar_chart" id="g_creature"></div>
@@ -94,6 +88,7 @@
     <div class="bar_chart" id="top_creature"></div>
     <div class="bar_chart" id="top_upgrade"></div>
     <div class="bar_chart" id="top_amber"></div>
+    <div id="force"></div>
 
     <script>
       let type_nums = {{ type_nums|safe }}
@@ -239,7 +234,7 @@
                   .attr("x", function(d, i) {return (i*bar_width)+bar_width/2})
                   .attr("y", 250 + 20)
 
-            
+
           svg.append("text")
             .attr("text-anchor", "middle")
             .attr("transform", "translate(" + width/2 +",0)")
@@ -338,8 +333,8 @@
                         if (d.percent == 100) {
                             div .html(
                                 "<h3>" + deck.name + "</h3>" +
-                                "<b>Power Level:</b> " + deck.losses +
-                                "<br/><b>Chains:</b> " + deck.losses +
+                                "<b>Power Level:</b> " + deck.power_level +
+                                "<br/><b>Chains:</b> " + deck.chains +
                                 "<br/><b>Wins:</b> " + deck.wins +
                                 "<br/><b>Losses:</b> " + deck.losses
                             )
@@ -347,8 +342,8 @@
                         div .html(
                                 "<h3>" + deck.name + "</h3>" +
                                 "<b>Percent Match:</b> " + d.percent +
-                                "<br/><b>Power Level:</b> " + deck.losses +
-                                "<br/><b>Chains:</b> " + deck.losses +
+                                "<br/><b>Power Level:</b> " + deck.power_level +
+                                "<br/><b>Chains:</b> " + deck.chains +
                                 "<br/><b>Wins:</b> " + deck.wins +
                                 "<br/><b>Losses:</b> " + deck.losses
                             )

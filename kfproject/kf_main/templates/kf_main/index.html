@@ -25,8 +25,16 @@
       </div>
 
       {% if message %}
-      <div>{{ message }}</div>
+      <div id="message">{{ message }}</div>
       {% endif %}
     </form>
+
+    <script>
+        let message = document.querySelector("#message")
+        message.addEventListener("click", function(){
+          message.innerText = ""
+
+        })
+    </script>
   </body>
 </html>

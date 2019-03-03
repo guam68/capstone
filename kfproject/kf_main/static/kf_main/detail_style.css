@@ -1,3 +1,15 @@
+body {
+    color:whitesmoke;
+}
+#deck_wrap {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.hex_wrap {
+    margin-left: 120px;
+}
 .bar_chart {
     height: 300px;
     width: 600px;
@@ -25,13 +37,35 @@
 }
 
 #house_cards {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
     display:flex;
     justify-content: space-evenly;
+    padding: 2px 0;
+    margin: 50px;
 }
 
-#card {
-    position: relative;
+#house1 {
+    background: #f15922;
+    padding: 10px;
 }
+
+#house2 {
+    background: #febc3f;
+    padding: 10px;
+}
+
+#house3 {
+    background: #167449;
+    padding: 10px;
+}
+.card {
+    width: 400px;
+    color: whitesmoke;
+    background: rgb(58, 57, 61);
+    padding: 6px; 
+    margin-bottom: 2px;
+}
+
 
 div.tooltip {	
     color:whitesmoke;
@@ -45,3 +79,24 @@ div.tooltip {
     pointer-events: none;			
 }
 
+
+.hex_top {
+    width: 0;
+    border-bottom: 90px solid rgb(25, 40, 107);
+    border-left: 152px solid transparent;
+    border-right: 152px solid transparent;
+}
+
+.hex {
+    color: whitesmoke;
+    width: 304px;
+    height: 174px;
+    background-color: rgb(25, 40, 107);
+}
+
+.hex_bottom {
+    width: 0;
+    border-top: 90px solid rgb(25, 40, 107);
+    border-left: 152px solid transparent;
+    border-right: 152px solid transparent;
+}

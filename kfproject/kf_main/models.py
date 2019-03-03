@@ -113,8 +113,8 @@ class Distribution(models.Model):
 class Meta_Cards(models.Model):
     house = models.TextField(blank=True, null=True)
     card_id = models.TextField(blank=True, null=True)
-    percent_owned = models.IntegerField(blank=True, null=True)
-    points = models.IntegerField(blank=True, null=True)
+    count = models.IntegerField(blank=True, null=True)
+    points = models.IntegerField(blank=True, null=True) #rarity built in?
 
     class Meta:
         managed = True

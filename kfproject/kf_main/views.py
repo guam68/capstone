@@ -23,7 +23,7 @@ def index(request):
 
 def deck_list(request):
     deck_name = request.GET['search']
-    deck_list = Deck.objects.filter(name__icontains=deck_name)
+    deck_list = Deck2.objects.filter(name__icontains=deck_name)
 
     return render(request, 'kf_main/deck_list.html', {'deck_list': deck_list})
 
@@ -299,7 +299,6 @@ def get_top100():
         pwr_list = Deck2.objects.filter(power_level=i)
         pwr_dict[i] = pwr_list
 
-
     for power in pwr_dict:
         ordered_list = []
         for deck in pwr_dict[power]:
@@ -329,11 +328,39 @@ def get_top100():
     return top100
                 
                 
+def get_top_cards():
+    decks = get_top100()
+    houses = {
+        'Brobnar':{},
+        'Dis':{},
+        'Logos':{},
+        'Mars':{},
+        'Sanctum':{},
+        'Shadows':{},
+        'Untamed':{},
+    }
+    
+    for deck in decks:
+        for card_id in deck.card_list:
+            card = Card.objects.get(id=card_id)
+
+            if card.card_title in houses[card.house]:
+                houses[card.house][card.card_title] += 1
+            else:
+                houses[card.house][card.card_title] = 1
+    
+    for house in houses:
+        sorted_house = sorted(houses[house].items(), key=lambda kv: kv[1], reverse=True)
+        print(house)
+        print(sorted_house)
 
     
+    return houses
+            
 
 
-# get_top100()
+
+# get_top_cards()
 # update_dist()
 # kf2.set_main_data(kf2.page, kf2.site)
 # get_nodes('eb5d4c4a-5957-4276-ab9a-0d1b19f42e81')
