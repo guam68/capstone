@@ -154,16 +154,17 @@ def set_main_data(page, site):
                 try:
                     Deck2.objects.bulk_create(deck_objs, batch_size=100, ignore_conflicts=True)
                     Card.objects.bulk_create(card_objs, batch_size=100, ignore_conflicts=True)
-
-                    if Current_Page.objects.filter(id=1).exists():
-                        Current_Page.objects.filter(id=1).update(page=page)
-                        Current_Page.objects.filter(id=1).update(run_time=get_runtime())
-                    else:
-                        current_page = Current_Page.objects.create(id=1, page=page, run_time=get_runtime())
-                        current_page.save()
+                    
                 except:
                     logging.exception(f'{datetime.datetime.now()} Error when inserting data on page: {page}')
                     sleep(5)
+            finally:
+                if Current_Page.objects.filter(id=1).exists():
+                        Current_Page.objects.filter(id=1).update(page=page)
+                        Current_Page.objects.filter(id=1).update(run_time=get_runtime())
+                else:
+                    current_page = Current_Page.objects.create(id=1, page=page, run_time=get_runtime())
+                    current_page.save()
 
             page_count = 0
             deck_objs = []
