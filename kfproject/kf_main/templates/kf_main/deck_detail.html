@@ -43,6 +43,7 @@
 
     <div id="house_cards">
       <div class="house" id="house1">
+          <img class="house_img" id="house1_img" width="90px">
         <h1 id="h1_name">{{ house1 }}</h1>
         {% for card in deck_card_list %} {% if card.house == house1 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
@@ -52,7 +53,8 @@
       </div>
 
       <div class="house" id="house2">
-        <h1>{{ house2 }}</h1>
+          <img class="house_img" id="house2_img" width="90px">
+        <h1 id="h2_name">{{ house2 }}</h1>
         {% for card in deck_card_list %} {% if card.house == house2 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
@@ -61,7 +63,8 @@
       </div>
 
       <div class="house" id="house3">
-        <h1>{{ house3 }}</h1>
+          <img class="house_img" id="house3_img" width="90px">
+        <h1 id="h3_name">{{ house3 }}</h1>
         {% for card in deck_card_list %} {% if card.house == house3 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
@@ -108,6 +111,7 @@
         let slide_idx = 1;
         let slide_idx_top = 1;
 
+        style_house()
         showDivs(slide_idx, "global");
         showDivs(slide_idx_top, "top");
 
@@ -116,6 +120,56 @@
         let num_artifact = type_nums[1]['amount']
         let num_creature = type_nums[2]['amount']
         let num_upgrade = type_nums[3]['amount']
+
+
+
+        function style_house() {
+            let house_names = [
+                document.querySelector("#h1_name").innerText,
+                document.querySelector("#h2_name").innerText,
+                document.querySelector("#h3_name").innerText
+            ] 
+
+            let house_imgs = [
+                document.querySelector("#house1_img"),
+                document.querySelector("#house2_img"),
+                document.querySelector("#house3_img")
+            ]
+
+            let houses = [
+                document.querySelector("#house1"),
+                document.querySelector("#house2"),
+                document.querySelector("#house3")
+            ] 
+
+            for(let i=0;i<houses.length;i++){
+                if (house_names[i] == "Brobnar"){
+                    houses[i].style.background = "#f15922"
+                    house_imgs[i].src = "{% static 'kf_main/images/brobnar.png' %}"
+                } else if (house_names[i] == "Shadows") {
+                    houses[i].style.background = "#febc3f" 
+                    house_imgs[i].src = "{% static 'kf_main/images/shadows.png' %}"
+                } else if (house_names[i] == "Untamed") {
+                    houses[i].style.background = "#167449" 
+                    house_imgs[i].src = "{% static 'kf_main/images/untamed.png' %}"
+                } else if (house_names[i] == "Logos") {
+                    houses[i].style.background = "#c95827" 
+                    house_imgs[i].src = "{% static 'kf_main/images/logos.png' %}"
+                } else if (house_names[i] == "Dis") {
+                    houses[i].style.background = "#292a2a" 
+                    house_imgs[i].src = "{% static 'kf_main/images/dis.png' %}"
+                } else if (house_names[i] == "Sanctum") {
+                    houses[i].style.background = "#1483bc" 
+                    house_imgs[i].src = "{% static 'kf_main/images/sanctum.png' %}"
+                } else if (house_names[i] == "Mars") {
+                    houses[i].style.background = "#4f2e91" 
+                    house_imgs[i].src = "{% static 'kf_main/images/mars.png' %}"
+                }
+            }
+        }
+
+
+
 
 
         {% autoescape off %}
