@@ -172,8 +172,20 @@ div.tooltip {
 #chains {
     grid-column: 1/2;
     grid-row: 2/3;
-    text-align: center;
     margin:auto;
+}
+
+#chains div {
+    border: 10px solid rgb(96, 170, 255);
+    border-radius: 30px;
+    height:30px;
+    width:30px;
+}
+
+#chains p {
+    text-align: center;
+    font-size: 20px;
+    margin: 3px 0;
 }
 
 #amber {
