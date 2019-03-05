@@ -14,30 +14,27 @@
     </form>
     {% endfor %}
     
-    {% if deck_list.has_other_pages %}
-    <ul class="pagination">
-      {% if deck_list.has_previous %}
-      <li><a href="?search={{ deck_name }}&page={{ deck_list.previous_page_number }}">&laquo;</a></li>
-      {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
-      {% endif %}
-      
-      {% for i in deck_list.paginator.page_range %} {% if deck_list.number == i %}
-      <li class="active">
-        <span>{{ i }} <span class="sr-only">(current)</span></span>
-      </li>
-      {% elif i > page_obj.number|add:"-3" and i < page_obj.number|add:"3" %}
-      <li>
-        <a href="?search={{ deck_name }}&page={{ i }}">{{ i }}</a>
-      </li>
-      {% endif %} {% endfor %} 
-      
-      {% if deck_list.has_next %}
-      <li><a href="?search={{ deck_name }}&page={{ deck_list.next_page_number }}">&raquo;</a></li>
-      {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-      {% endif %}
-    </ul>
-    {% endif %}
+    
+    <div class="prev_next">
+        {% if deck_list.has_previous %}
+            <a class="prev btn btn-info" href="?search={{ deck_name }}&page={{deck_list.previous_page_number}}">Prev</a>
+        {% endif %}
+        {% if deck_list.has_next %}
+            <a class="next btn btn-info" href="?search={{ deck_name }}&page={{deck_list.next_page_number}}">Next</a>
+        {% endif %}
+        <div class="pages">
+            <ul>
+            {% for i in page_range %}
+                {% if deck_list.number == pg %}
+                    <li><a href="?search={{ deck_name }}&page={{ i }}" class="btn btn-default">{{ i }}</a></li>
+                {% else %}
+                    <li><a href="?search={{ deck_name }}&page={{ i }}" class="btn">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            </ul>
+        </div>
+        <span class="clear_both"></span>
+    </div>
+
   </body>
 </html>

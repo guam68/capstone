@@ -37,7 +37,13 @@ def deck_list(request):
     except EmptyPage:
         deck_list = paginator.page(paginator.num_pages)
 
-    return render(request, 'kf_main/deck_list.html', {'deck_list': deck_list, 'deck_name': deck_name})
+    index = deck_list.number - 1 
+    max_index = len(paginator.page_range)
+    start_index = index - 3 if index >= 3 else 0
+    end_index = index + 4 if index <= max_index - 4 else max_index
+    page_range = list(paginator.page_range)[start_index:end_index]
+
+    return render(request, 'kf_main/deck_list.html', {'deck_list': deck_list, 'deck_name': deck_name, 'page_range': page_range})
 
 
 def deck_search(request):
