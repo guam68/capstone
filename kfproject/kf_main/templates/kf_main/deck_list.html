@@ -1,3 +1,4 @@
+{% load static %}
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -5,36 +6,44 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Deck List</title>
     <link rel="icon" href="data:;base64,=" />
-
+    <link rel="stylesheet" type="text/css" href="{% static 'kf_main/deck_list.css' %}" />
   </head>
   <body>
-    {% for deck in deck_list %}
-    <form action="{% url 'kf_main:deck_detail' deck_id=deck.id %}">
-      <button type="submit">{{ deck.name }}</button>
-    </form>
-    {% endfor %}
-    
-    
-    <div class="prev_next">
-        {% if deck_list.has_previous %}
-            <a class="prev btn btn-info" href="?search={{ deck_name }}&page={{deck_list.previous_page_number}}">Prev</a>
-        {% endif %}
-        {% if deck_list.has_next %}
-            <a class="next btn btn-info" href="?search={{ deck_name }}&page={{deck_list.next_page_number}}">Next</a>
-        {% endif %}
-        <div class="pages">
-            <ul>
-            {% for i in page_range %}
-                {% if deck_list.number == pg %}
-                    <li><a href="?search={{ deck_name }}&page={{ i }}" class="btn btn-default">{{ i }}</a></li>
-                {% else %}
-                    <li><a href="?search={{ deck_name }}&page={{ i }}" class="btn">{{ i }}</a></li>
-                {% endif %}
-            {% endfor %}
-            </ul>
-        </div>
-        <span class="clear_both"></span>
+    <div class="deck_wrapper">
+      {% for deck in decks %}
+      <a class="deck" href="{% url 'kf_main:deck_detail' deck_id=deck.id %}">
+        {{ deck.name }}
+        <div class="house_imgs"></div>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="pagination">
+      {% if deck_list.has_previous %}
+      <a href="?search={{ deck_name }}&page={{ decks.previous_page_number }}"
+        >&laquo;</a
+      >
+      {% endif %} {% for i in page_range %} {% if decks.number == i %}
+      <a href="?search={{ deck_name }}&page={{ i }}" class="active">{{ i }}</a>
+      {% else %}
+      <a href="?search={{ deck_name }}&page={{ i }}">{{ i }}</a>
+      {% endif %} {% endfor %} {% if deck_list.has_next %}
+      <a href="?search={{ deck_name }}&page={{ decks.next_page_number }}">&raquo;</a>
+      {% endif %}
     </div>
 
+    <script>
+        let decks = document.querySelectorAll(".house_imgs")
+        house_lists = {{ house_lists|safe }}
+        let i = 0
+        for(let i=0;i<decks.length;i++) {
+          house_lists[i].forEach(function(house) {
+            let house_img = document.createElement("img")
+            house_img.src = "../static/kf_main/images/" + house + ".png"
+            house_img.width = "25"
+            house_img.class = "house_img"
+            decks[i].appendChild(house_img)
+          })
+        };
+    </script>
   </body>
 </html>

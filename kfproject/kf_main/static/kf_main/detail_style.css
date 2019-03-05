@@ -9,17 +9,11 @@ body {
     background-attachment: fixed;
 }
 
-
-
-
-
 #deck_wrap {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
 }
-
-
 
 .chart_wrapper {
     display:flex;

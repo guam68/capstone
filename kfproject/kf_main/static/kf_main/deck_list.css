@@ -1,4 +1,4 @@
-body {
+/* body {
     color:whitesmoke;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     margin: 0;
@@ -7,8 +7,61 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
+} */
+
+.deck_wrapper {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-content: center;
 }
 
-button {
-    
+.deck_wrapper .deck {
+    color: whitesmoke;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 2px;
+    margin-left: 40px;
+    padding : 5px 20px;
+    text-decoration: none;
+    background: rgba(65, 65, 65, 0.856);
+    width: 50%;
+}
+
+.deck_wrapper .deck:visited {
+    color: whitesmoke;
+}
+
+.deck_wrapper .deck:hover {
+    background: rgba(65, 65, 65, 0.582);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+  }
+  
+  .pagination a.active {
+    background-color: rgb(74, 126, 179);
+    color: white;
+  }
+  
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+.deck {
+    position: relative;
+}
+
+.house_imgs {
+    position: absolute;
+    right: 20px;
+    top: 2px;
 }

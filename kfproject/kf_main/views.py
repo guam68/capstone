@@ -31,19 +31,31 @@ def deck_list(request):
     paginator = Paginator(deck_list, 25)
 
     try:
-        deck_list = paginator.page(page)
+        decks = paginator.page(page)
     except PageNotAnInteger:
-        deck_list = paginator.page(1)
+        decks = paginator.page(1)
     except EmptyPage:
-        deck_list = paginator.page(paginator.num_pages)
+        decks = paginator.page(paginator.num_pages)
 
-    index = deck_list.number - 1 
+    index = decks.number - 1 
     max_index = len(paginator.page_range)
     start_index = index - 3 if index >= 3 else 0
-    end_index = index + 4 if index <= max_index - 4 else max_index
+    end_index = index + 3 if index <= max_index - 3 else max_index
     page_range = list(paginator.page_range)[start_index:end_index]
 
-    return render(request, 'kf_main/deck_list.html', {'deck_list': deck_list, 'deck_name': deck_name, 'page_range': page_range})
+
+    house_lists = [] 
+    for deck in deck_list:
+        house_lists.append(deck.house_list)
+
+    context = {
+        'house_lists': house_lists,
+        'decks': decks,
+        'deck_name': deck_name, 
+        'page_range': page_range,
+    }
+
+    return render(request, 'kf_main/deck_list.html', context)
 
 
 def deck_search(request):
