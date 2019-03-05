@@ -131,7 +131,7 @@ def set_main_data(page, site):
             deck_objs += [new_deck]
 
 
-        if page_count == 100:
+        if page_count == 100 or page == pages:
             try:
                 Deck2.objects.bulk_update(deck_objs, [
                     'name',
@@ -140,7 +140,6 @@ def set_main_data(page, site):
                     'chains',
                     'wins',
                     'losses',
-                    'id',
                     'bonus_amber',
                     'num_action',
                     'num_artifact',
@@ -150,13 +149,14 @@ def set_main_data(page, site):
                     'house_list',
                     'card_list'
                 ])
-            except:
+            except Exception as e:
+                logging.exception(f'{datetime.datetime.now()} Error updating data on page: {page}\nError: {e}')
                 try:
                     Deck2.objects.bulk_create(deck_objs, batch_size=100, ignore_conflicts=True)
                     Card.objects.bulk_create(card_objs, batch_size=100, ignore_conflicts=True)
                     
                 except:
-                    logging.exception(f'{datetime.datetime.now()} Error when inserting data on page: {page}')
+                    logging.exception(f'{datetime.datetime.now()} Error creating decks on page: {page}')
                     sleep(5)
             finally:
                 if Current_Page.objects.filter(id=1).exists():

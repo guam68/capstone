@@ -62,7 +62,7 @@ def get_tooltip(request):
 
 def deck_detail(request, deck_id):
 
-    data = kf.get_specific_deck(deck_id)
+    data = kf2.get_specific_deck(deck_id)
     deck = Deck2.objects.get(id=deck_id)        
     power_list, type_nums, deck_amber = get_stats(data[1])
     global_dist = model_to_dict(Distribution.objects.get(id=1))
