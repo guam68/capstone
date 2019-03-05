@@ -11,6 +11,8 @@ from collections import defaultdict
 import json
 from django.core import serializers
 from django.forms.models import model_to_dict
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils.datastructures import MultiValueDictKeyError
 
 from django.db import connection
 from psycopg2 import connect
@@ -22,10 +24,20 @@ def index(request):
 
 
 def deck_list(request):
-    deck_name = request.GET['search']
-    deck_list = Deck2.objects.filter(name__icontains=deck_name)
+    deck_name = request.GET.get('search')
+    deck_list = Deck2.objects.filter(name__icontains=deck_name).order_by('name')
 
-    return render(request, 'kf_main/deck_list.html', {'deck_list': deck_list})
+    page = request.GET.get('page')
+    paginator = Paginator(deck_list, 25)
+
+    try:
+        deck_list = paginator.page(page)
+    except PageNotAnInteger:
+        deck_list = paginator.page(1)
+    except EmptyPage:
+        deck_list = paginator.page(paginator.num_pages)
+
+    return render(request, 'kf_main/deck_list.html', {'deck_list': deck_list, 'deck_name': deck_name})
 
 
 def deck_search(request):

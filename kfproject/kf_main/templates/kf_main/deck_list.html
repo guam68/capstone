@@ -4,6 +4,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Deck List</title>
+    <link rel="icon" href="data:;base64,=" />
+
   </head>
   <body>
     {% for deck in deck_list %}
@@ -11,5 +13,31 @@
       <button type="submit">{{ deck.name }}</button>
     </form>
     {% endfor %}
+    
+    {% if deck_list.has_other_pages %}
+    <ul class="pagination">
+      {% if deck_list.has_previous %}
+      <li><a href="?search={{ deck_name }}&page={{ deck_list.previous_page_number }}">&laquo;</a></li>
+      {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+      {% endif %}
+      
+      {% for i in deck_list.paginator.page_range %} {% if deck_list.number == i %}
+      <li class="active">
+        <span>{{ i }} <span class="sr-only">(current)</span></span>
+      </li>
+      {% elif i > page_obj.number|add:"-3" and i < page_obj.number|add:"3" %}
+      <li>
+        <a href="?search={{ deck_name }}&page={{ i }}">{{ i }}</a>
+      </li>
+      {% endif %} {% endfor %} 
+      
+      {% if deck_list.has_next %}
+      <li><a href="?search={{ deck_name }}&page={{ deck_list.next_page_number }}">&raquo;</a></li>
+      {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+      {% endif %}
+    </ul>
+    {% endif %}
   </body>
 </html>
