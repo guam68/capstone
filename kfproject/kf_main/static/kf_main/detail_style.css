@@ -48,6 +48,21 @@ svg .bar_text {
     font-weight: bold;
 }
 
+.bar:hover {
+    fill: #e0dd2c;
+}
+
+div.tooltip {	
+    color:whitesmoke;
+    position: absolute;			
+    text-align: center;			
+    padding: 400px;		
+    font-size: 16px;		
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background: rgb(90, 92, 95);	
+    pointer-events: none;			
+}
+
 .arrow {
     text-align: center;
     padding: 200px 20px;
@@ -150,19 +165,6 @@ svg .bar_text {
 .rarity {
     position: absolute;
     right: 20px;
-}
-
-
-div.tooltip {	
-    color:whitesmoke;
-    position: absolute;			
-    text-align: center;			
-    width: 180px;					
-    height: 150px;					
-    padding: 2px;				
-    font: 12px sans-serif;		
-    background: rgb(90, 92, 95);	
-    pointer-events: none;			
 }
 
 .hex_wrap {

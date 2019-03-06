@@ -304,13 +304,16 @@
           let svg_width = 800
           if( title == "Creature Power"){width=400, svg_width=500} else {width=700}
           let height = 400
-          console.log(Object.values(data_list).length)
           let svg = d3v4.select(element_id).append("svg")
               .attr("height", "100%")
               .attr("width", "100%")
 
           let bar_width = width / Object.values(data_list).length;
           let scale = d3v4.scaleLinear().domain([0, d3v4.max(Object.values(data_list))]).range([0, 200])
+
+          let div = d3v4.select("#force").append("div")
+              .attr("class", "tooltip")
+              .style("opacity", 0);
 
           svg.selectAll("rect")
           .data(Object.values(data_list))
@@ -329,6 +332,17 @@
                           return "blue"
                       }
               })
+              .data(Object.values(data_list))
+              .on("mouseover", function(d) {
+                    div .transition()
+                        .duration(200)		
+                        .style("opacity", .9)
+                    div .html(d)
+                        .style("left", (d3v4.event.pageX) + "px")		
+                        .style("top", (d3v4.event.pageY - 28) + "px");
+              })
+              .on("mouseout", mouseout)
+        
           svg.selectAll("text")
               .data(Object.keys(data_list))
               .enter().append("text")
@@ -343,6 +357,12 @@
               .attr("transform", "translate(" + svg_width/2 +",25)")
               .attr("font-size", "24px")
               .text(title)
+
+          function mouseout() {
+            div .transition()
+                .duration(200)		
+                .style("opacity", 0)
+          }
 
       }
 
@@ -397,9 +417,7 @@
               .enter().append("line")
               .attr("class", "link");
 
-          let div = d3v3.select("#force").append("div")
-              .attr("class", "tooltip")
-              .style("opacity", 0);
+          
 
           let node = svg.selectAll(".node")
               .data(force.nodes())
