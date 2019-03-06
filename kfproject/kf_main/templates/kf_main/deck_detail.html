@@ -123,7 +123,7 @@
       </div>
     </div>
 
-    <div id="force"></div>
+    <div id="force"><div></div></div>
 
     <script>
       let slide_idx = 1;
@@ -193,16 +193,16 @@
       {% autoescape off %}
       make_pie({{ type_nums|safe }})
       generate_barchart({{ power_list }}, "#pwr_dist", 0, "Creature Power")
-      generate_barchart({{ g_action }}, "#g_action", num_action, "Actions")
-      generate_barchart({{ g_artifact }}, "#g_artifact", num_artifact, "Artifacts")
-      generate_barchart({{ g_creature }}, "#g_creature", num_creature, "Creatures")
-      generate_barchart({{ g_upgrade }}, "#g_upgrade", num_upgrade, "Upgrades")
-      generate_barchart({{ g_amber }}, "#g_amber", {{ deck_amber }}, "Amber")
-      generate_barchart({{ top_action }}, "#top_action", num_action, "Actions")
-      generate_barchart({{ top_artifact }}, "#top_artifact", num_artifact, "Artifacts")
-      generate_barchart({{ top_creature }}, "#top_creature", num_creature, "Creatures")
-      generate_barchart({{ top_upgrade }}, "#top_upgrade", num_upgrade, "Upgrades")
-      generate_barchart({{ top_amber }}, "#top_amber", {{ deck_amber }}, "Amber")
+      generate_barchart({{ g_action }}, "#g_action", num_action, "Actions (Global)")
+      generate_barchart({{ g_artifact }}, "#g_artifact", num_artifact, "Artifacts (Global)")
+      generate_barchart({{ g_creature }}, "#g_creature", num_creature, "Creatures (Global)")
+      generate_barchart({{ g_upgrade }}, "#g_upgrade", num_upgrade, "Upgrades (Global)")
+      generate_barchart({{ g_amber }}, "#g_amber", {{ deck_amber }}, "Amber (Global)")
+      generate_barchart({{ top_action }}, "#top_action", num_action, "Actions (Top 100)")
+      generate_barchart({{ top_artifact }}, "#top_artifact", num_artifact, "Artifacts (Top 100)")
+      generate_barchart({{ top_creature }}, "#top_creature", num_creature, "Creatures (Top 100)")
+      generate_barchart({{ top_upgrade }}, "#top_upgrade", num_upgrade, "Upgrades (Top 100)")
+      generate_barchart({{ top_amber }}, "#top_amber", {{ deck_amber }}, "Amber (Top 100)")
       {% endautoescape %}
 
       let card = document.querySelectorAll(".card")
@@ -291,8 +291,9 @@
 
 
       function generate_barchart(data_list, element_id, deck_amount, title) {
-          let width = 500
-          let height = 300
+          let svg_width = 800
+          let width = 700
+          let height = 400
           console.log(Object.values(data_list).length)
           let svg = d3v4.select(element_id).append("svg")
               .attr("height", "100%")
@@ -328,10 +329,8 @@
 
 
           svg.append("text")
-              .attr("class", "bar_text")
-              .attr("transform", "translate(" + width/2 +",0)")
-              .attr("x", 0)
-              .attr("y", 25)
+              .attr("class", "title_text")
+              .attr("transform", "translate(" + svg_width/2 +",25)")
               .attr("font-size", "24px")
               .text(title)
 

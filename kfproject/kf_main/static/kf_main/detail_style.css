@@ -15,42 +15,56 @@ body {
     justify-content: space-evenly;
 }
 
+
 .chart_wrapper {
     display:flex;
     justify-content: center;
-    align-items: stretch;
+    align-items: center;
+    height: 400px;
 }
 
 .bar_chart {
     color:whitesmoke;
     display:none;
     height: 300px;
-    width: 600px;
+    width: 800px;
 }
 
 .bar_chart_top {
     display:none;
     height: 300px;
-    width: 600px;
+    width: 800px;
 }
 
 svg .bar_text {
     fill: whitesmoke;
     text-anchor: middle;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 10px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 .arrow {
     text-align: center;
-    padding: 150px 20px;
-    font-size: 24px;
+    padding: 200px 20px;
+    font-size: 80px;
+}
+
+.title_text {
+    fill: whitesmoke;
+    text-anchor: middle;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 30px;
 }
 
 
 #force {
     height: 400px;
-    width: 600px;
+    width: 100%;
+}
+
+#force svg {
+    margin-left: 200px;
 }
 
 .link {
