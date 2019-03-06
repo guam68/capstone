@@ -64,6 +64,7 @@
         {% for card in deck_card_list %} {% if card.house == house1 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
+          <img class="rarity" data-value="{{ card.rarity }}" width="15px">
         </div>
         {% endif %} {% endfor %}
       </div>
@@ -74,6 +75,7 @@
         {% for card in deck_card_list %} {% if card.house == house2 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
+          <img class="rarity" data-value="{{ card.rarity }}" width="15px">
         </div>
         {% endif %} {% endfor %}
       </div>
@@ -84,6 +86,7 @@
         {% for card in deck_card_list %} {% if card.house == house3 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
+          <img class="rarity" data-value="{{ card.rarity }}" width="15px">
         </div>
         {% endif %} {% endfor %}
       </div>
@@ -184,6 +187,12 @@
                   house_imgs[i].src = "{% static 'kf_main/images/mars.png' %}"
               }
           }
+
+          let cards = document.querySelectorAll(".rarity")
+          cards.forEach(function(card){
+              card.src = "../../static/kf_main/images/"+ card.dataset.value + ".png"
+          })
+          
       }
 
 
@@ -214,7 +223,7 @@
               card_img.id = "card_img"
               card_img.src = url
               card_img.style.position = "absolute"
-              card_img.style.right = "-10px"
+              card_img.style.right = "50px"
               card[i].appendChild(card_img)
 
           })
@@ -407,47 +416,36 @@
               })
               .attr("percent", function(d) { return d.percent} )
               .attr("win_loss", function(d) { return d.win_loss} )
-              .on("mouseover", function(d) {
-                      div .transition()
-                          .duration(200)
-                          .style("opacity", .9)
-                      div .html("")
-                          .style("left", (d3v3.event.pageX) + "px")
-                          .style("top", (d3v3.event.pageY - 28) + "px");
-
-                      axios.post("{% url 'kf_main:get_tooltip' %}", {
-                          "deck_id": d.name
-                      }, {
-                          headers: {
-                              "X-CSRFToken": "{{ csrf_token }}"
-                          },
-                      }
-                      ).then(function(response) {
-                          deck = response.data
-                          if (d.percent == 100) {
-                              div .html(
-                                  "<h3>" + deck.name + "</h3>" +
-                                  "<b>Power Level:</b> " + deck.power_level +
-                                  "<br/><b>Chains:</b> " + deck.chains +
-                                  "<br/><b>Wins:</b> " + deck.wins +
-                                  "<br/><b>Losses:</b> " + deck.losses
-                              )
-                          } else {
-                          div .html(
-                                  "<h3>" + deck.name + "</h3>" +
-                                  "<b>Percent Match:</b> " + d.percent +
-                                  "<br/><b>Power Level:</b> " + deck.power_level +
-                                  "<br/><b>Chains:</b> " + deck.chains +
-                                  "<br/><b>Wins:</b> " + deck.wins +
-                                  "<br/><b>Losses:</b> " + deck.losses
-                              )
-                          }
-                              })
-
-              })
+              .on("mouseover", mouseover) 
               .on("mouseout", mouseout)
               .on("click", function(d){
-
+                    let detail = document.querySelector("#node_details")
+                    axios.post("{% url 'kf_main:get_tooltip' %}", {
+                            "deck_id": d.name
+                        }, {
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}"
+                            },
+                        }
+                        ).then(function(response) {
+                            deck = response.data
+                            if (d.percent == 100) {
+                                detail.innerHTML =
+                                    "<a href='" + deck.id + "'>" + deck.name + "</a>" +
+                                    "<b>Power Level:</b> " + deck.power_level +
+                                    "<br/><b>Chains:</b> " + deck.chains +
+                                    "<br/><b>Wins:</b> " + deck.wins +
+                                    "<br/><b>Losses:</b> " + deck.losses
+                            } else {
+                                detail.innerHTML = 
+                                    "<a href='" + deck.id + "'>" + deck.name + "</a>" +
+                                    "<b>Percent Match:</b> " + d.percent +
+                                    "<br/><b>Power Level:</b> " + deck.power_level +
+                                    "<br/><b>Chains:</b> " + deck.chains +
+                                    "<br/><b>Wins:</b> " + deck.wins +
+                                    "<br/><b>Losses:</b> " + deck.losses
+                            }
+                                })
               })
               .call(force.drag);
 
@@ -458,11 +456,6 @@
                   } else {
                       return ((d.percent/45)**7)
                   }})
-
-          // node.append("text")
-          //     .attr("x", 12)
-          //     .attr("dy", ".35em")
-          //     .text(function(d) { return d.name; });
 
 
           function tick() {
@@ -477,12 +470,32 @@
           }
 
 
+          function mouseover() {
+            let radius = d3v3.select(this).select("circle").attr("r")  
+            d3v3.select(this).select("circle").transition()
+                .duration(550)
+                .attr("r", function(d){ 
+                    if (d.percent == 100) {
+                        return 10
+                    } else if (radius < 15){
+                         return 15 
+                    } else {
+                        return radius + 2
+                    }
+                    });
+            }
+
+
           function mouseout() {
-              d3v3.select(this).select("circle").transition()
-                      div .transition()
-                          .duration(200)
-                          .style("opacity", 0)
-          }
+            d3v3.select(this).select("circle").transition()
+                .duration(550)
+                .attr("r", function(d){ 
+                    if (d.percent == 100) {
+                        return 10
+                    } else {
+                        return ((d.percent/45)**7)
+                    }});
+            }
 
       }
 

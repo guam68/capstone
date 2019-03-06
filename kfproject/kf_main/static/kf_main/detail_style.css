@@ -77,12 +77,26 @@ svg .bar_text {
 }
 
 #node_details {
+    padding: 40px 0 0 60px;
     width: 400px;
 }
+ 
+#node_details a {
+    display: block;
+    font-size: 24px;
+    color:whitesmoke;
+    text-decoration: none;
+    padding-bottom: 10px;
+}
 
-/* #force svg {
-    margin-left: 200px;
-} */
+#node_details a:hover {
+    color:rgb(97, 97, 97);
+}
+
+#node_details a:visited {
+    color:whitesmoke;
+}
+
 
 .link {
     fill: none;
@@ -131,6 +145,11 @@ svg .bar_text {
     background: rgba(71, 69, 75, 0.897);
     padding: 6px 10px; 
     margin-bottom: 2px;
+}
+
+.rarity {
+    position: absolute;
+    right: 20px;
 }
 
 
