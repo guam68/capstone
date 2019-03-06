@@ -28,6 +28,20 @@
 
     {% autoescape off %}
     <h1 id="deck_name">{{ deck.name }}</h1>
+
+    <form id="position_form" action="{% url 'kf_main:deck_search' %}" method="POST">
+        {% csrf_token %}
+        <div id="search_bar_div">
+          <input
+            id="deck_search"
+            type="text"
+            name="search_string"
+            placeholder="Enter a deck name"
+          />
+          <button id="deck_search_btn" type="submit">⌕</button>
+        </div>
+      </form>
+
     <div id="deck_id" hidden>{{ deck.id }}</div>
     <div id="deck_wrap">
       <div class="hex_wrap">

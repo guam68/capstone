@@ -9,6 +9,31 @@ body {
     background-attachment: fixed;
 }
 
+#position_form {
+    position: absolute;
+    right: 80px;
+    top:40px;
+    width:500px;
+}
+
+#deck_search {
+    width:88%;
+    height: 30px;
+    font-size: 20px;
+    background-color: #d8d8d8;
+    border: none;
+    padding: 0 10px;
+}
+
+#deck_search_btn {
+    width:30px;
+    height: 30px;
+    font-size: 20px;
+    background-color: #8f8f8f;
+    border: none;
+    text-align: center;
+} 
+
 #deck_name {
     margin:40px 80px;
 }
@@ -56,7 +81,7 @@ div.tooltip {
     color:whitesmoke;
     position: absolute;			
     text-align: center;			
-    padding: 400px;		
+    padding: 4px;		
     font-size: 16px;		
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     background: rgb(90, 92, 95);	
