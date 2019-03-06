@@ -9,12 +9,16 @@ body {
     background-attachment: fixed;
 }
 
+#deck_name {
+    margin:40px 80px;
+}
+
 #deck_wrap {
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    margin: 80px 0;
 }
-
 
 .chart_wrapper {
     display:flex;
@@ -57,15 +61,28 @@ svg .bar_text {
     font-size: 30px;
 }
 
+#force_wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 80px;
+}
 
 #force {
+    display: flex;
+    justify-content: center;
     height: 400px;
-    width: 100%;
+    width: 1000px;
+    background: #10262ccc;
+
 }
 
-#force svg {
-    margin-left: 200px;
+#node_details {
+    width: 400px;
 }
+
+/* #force svg {
+    margin-left: 200px;
+} */
 
 .link {
     fill: none;
@@ -93,21 +110,11 @@ svg .bar_text {
     margin: 50px;
 }
 
-#house1 {
-    padding: 10px;
-}
-
-#house2 {
-    padding: 10px;
-}
-
-#house3 {
-    padding: 10px;
-}
 
 .house {
     position: relative;
     z-index: 0;
+    padding: 10px;
 }
 
 .house_img {
@@ -177,27 +184,33 @@ div.tooltip {
     margin:auto;
 }
 
+#win_loss div {
+    padding-top: 10px;
+}
+
 #chains {
-    grid-column: 1/2;
+    grid-column: 2/3;
     grid-row: 2/3;
     margin:auto;
 }
 
-#chains div {
+#chains {
     border: 10px solid rgb(96, 170, 255);
     border-radius: 30px;
     height:30px;
     width:30px;
 }
 
-#chains p {
-    text-align: center;
-    font-size: 20px;
-    margin: 3px 0;
+#center_chain_txt {
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    height: 90%;
 }
 
+
 #amber {
-    grid-column: 2/3;
+    grid-column: 1/2;
     grid-row: 2/3;
     text-align: center;
     margin:auto;

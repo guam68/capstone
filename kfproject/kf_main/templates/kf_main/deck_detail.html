@@ -27,7 +27,7 @@
     <div id="background_div"></div>
 
     {% autoescape off %}
-    <h1>{{ deck.name }}</h1>
+    <h1 id="deck_name">{{ deck.name }}</h1>
     <div id="deck_id" hidden>{{ deck.id }}</div>
     <div id="deck_wrap">
       <div class="hex_wrap">
@@ -44,10 +44,8 @@
             <div>Losses: {{ deck.losses }}</div>
           </div>
           <div id="chains">
-            <div>
-              <p>
-                {{ deck.chains }}
-              </p>
+            <div id="center_chain_txt">
+              <span>{{ deck.chains }}</span>
             </div>
           </div>
           <div id="amber">Amber: {{ deck_amber }}</div>
@@ -123,7 +121,9 @@
       </div>
     </div>
 
-    <div id="force"><div></div></div>
+    <div id="force_wrapper">
+      <div id="force"><div id="node_details"></div></div>
+    </div>
 
     <script>
       let slide_idx = 1;
@@ -214,6 +214,7 @@
               card_img.id = "card_img"
               card_img.src = url
               card_img.style.position = "absolute"
+              card_img.style.right = "-10px"
               card[i].appendChild(card_img)
 
           })
@@ -292,7 +293,7 @@
 
       function generate_barchart(data_list, element_id, deck_amount, title) {
           let svg_width = 800
-          let width = 700
+          if( title == "Creature Power"){width=400, svg_width=500} else {width=700}
           let height = 400
           console.log(Object.values(data_list).length)
           let svg = d3v4.select(element_id).append("svg")
@@ -397,9 +398,11 @@
               .attr("class", "node")
               .style("fill", function(d) {
                   if (d.win_loss < 0) {
-                      return "#b30000"
+                        return "#b30000"
+                  } else if (d.win_loss == 1) {
+                        return "#ddca23"
                   } else if (d.win_loss > 0){
-                          return "#00cc00"
+                        return "#00cc00"
                   } else { return "#666666"}
               })
               .attr("percent", function(d) { return d.percent} )

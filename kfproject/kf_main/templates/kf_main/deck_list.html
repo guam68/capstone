@@ -18,7 +18,7 @@
       {% endfor %}
     </div>
     <div class="pagination">
-      {% if deck_list.has_previous %}
+      {% if decks.has_previous %}
       <a href="?search={{ deck_name }}&page={{ decks.previous_page_number }}"
         >&laquo;</a
       >
@@ -26,7 +26,7 @@
       <a href="?search={{ deck_name }}&page={{ i }}" class="active">{{ i }}</a>
       {% else %}
       <a href="?search={{ deck_name }}&page={{ i }}">{{ i }}</a>
-      {% endif %} {% endfor %} {% if deck_list.has_next %}
+      {% endif %} {% endfor %} {% if decks.has_next %}
       <a href="?search={{ deck_name }}&page={{ decks.next_page_number }}">&raquo;</a>
       {% endif %}
     </div>
