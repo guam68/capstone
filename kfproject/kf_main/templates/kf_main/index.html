@@ -29,8 +29,12 @@
 
       {% if message %}
       <div id="message">{{ message }}</div>
+      {% else %}
+      <div id="message"></div>
       {% endif %}
     </form>
+
+    <div class="deck_wrapper"></div>
 
     <script>
 
@@ -39,22 +43,32 @@
       let message = document.querySelector("#message")
       test.addEventListener("click", function(){
           form_position.style.height = "20%"
-          message.innerText = ""
+          if (!(document.querySelector(".deck")))
+              message.innerText = "Loading..."
 
       })
 
-      let body = document.querySelector("body")
+      
       axios.get("{% url 'kf_main:get_top100' %}").then(function(response) {
                 let top100 = response.data
-                for(let i=0;i<Object.keys(top100).length;i++) {
+                  create_decks(top100, message)
+          
+                });
+
+                
+      function create_decks(decks, message) {
+        let deck_wrapper = document.querySelector(".deck_wrapper")
+        for(let i=0;i<Object.keys(decks).length;i++) {
                       let deck = document.createElement("a")
                       deck.className = "deck"
-                      deck.href = "../deck_detail/" + top100[i]["id"]
-                      deck.innerText = top100[i]["name"]
-                      body.appendChild(deck) 
+                      deck.id = i
+                      deck.href = "../deck_detail/" + decks[i]["id"]
+                      deck.innerText =decks[i]["name"]
+                      deck_wrapper.appendChild(deck)
                   }
-                });
-                
+        deck_wrapper.style.opacity = "1"
+        message.innerText = ""
+      }
     </script>
   </body>
 </html>

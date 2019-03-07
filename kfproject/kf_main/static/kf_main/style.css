@@ -43,7 +43,7 @@ body {
 #center_form {
   transition: height 2s;
   display: flex;
-  height: 100%;
+  height: 90%;
   width: 100%;
   align-items: center;
   justify-content: center;
@@ -55,4 +55,33 @@ body {
 #search_bar_div {
   width: 500px;
   padding-bottom: 20px;
+}
+
+.deck_wrapper {
+  opacity: 0;
+  display: flex;
+  flex-direction: column; 
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  transition: opacity .5s ease-in;
+}
+
+.deck_wrapper .deck {
+  color: whitesmoke;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  margin: 2px;
+  margin-left: 40px;
+  padding : 5px 20px;
+  text-decoration: none;
+  background: rgba(65, 65, 65, 0.856);
+  width: 50%;
+}
+
+.deck_wrapper .deck:visited {
+  color: whitesmoke;
+}
+
+.deck_wrapper .deck:hover {
+  background: rgba(65, 65, 65, 0.582);
 }

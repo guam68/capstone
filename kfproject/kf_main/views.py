@@ -340,10 +340,13 @@ def get_top100(request):
                         ordered_list.insert(i, deck)
                         break
                     elif deck.chains == top_deck.chains:
-                        if (deck.wins/(deck.wins+deck.losses) > top_deck.wins/(top_deck.wins+top_deck.losses) or 
-                        deck.wins/(deck.wins+deck.losses) == top_deck.wins/(top_deck.wins+top_deck.losses)):
+                        if deck.wins/(deck.wins+deck.losses) > top_deck.wins/(top_deck.wins+top_deck.losses):
                             ordered_list.insert(i, deck)
                             break
+                        elif deck.wins/(deck.wins+deck.losses) == top_deck.wins/(top_deck.wins+top_deck.losses):
+                            if deck.wins > top_deck.wins:
+                                ordered_list.insert(i, deck)
+                                break
             if deck not in ordered_list:
                 ordered_list.append(deck)
 
@@ -353,9 +356,6 @@ def get_top100(request):
     for i, deck in enumerate(top100[:100]):
         top_dict[i] = model_to_dict(deck)
         
-
-    print('up to return top100') 
-
     return JsonResponse(top_dict)
                 
                 
@@ -390,7 +390,7 @@ def get_top_cards():
             
 
 
-
+# get_top100("w")
 # get_top_cards()
 # update_dist()
 # kf2.set_main_data(kf2.page, kf2.site)
