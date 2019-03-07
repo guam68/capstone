@@ -321,7 +321,7 @@ def update_dist():
 
 #     print(len(top_decks))
 
-def get_top100():
+def get_top100(request):
     top100 = []
     pwr_dict ={}
 
@@ -349,13 +349,14 @@ def get_top100():
 
         top100 = ordered_list + top100
 
-    print(len(top100))
-    top100 = top100[:100]
+    top_dict={}
+    for i, deck in enumerate(top100[:100]):
+        top_dict[i] = model_to_dict(deck)
+        
 
-    for deck in top100:
-        print(str(deck.power_level)+'--'+str(deck.chains) +'--'+ str(int(deck.wins*100/(deck.wins+deck.losses))))
-    
-    return top100
+    print('up to return top100') 
+
+    return JsonResponse(top_dict)
                 
                 
 def get_top_cards():

@@ -8,9 +8,12 @@
     <title>Index</title>
     <link rel="icon" href="data:;base64,=" />
     <link rel="stylesheet" type="text/css" href="{% static 'kf_main/style.css' %}" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
     <div id="background_div"></div>
+
+    <button id="test" type="submit">test</button>
 
     <form id="center_form" action="{% url 'kf_main:deck_search' %}" method="POST">
       {% csrf_token %}
@@ -30,11 +33,28 @@
     </form>
 
     <script>
-        let message = document.querySelector("#message")
-        message.addEventListener("click", function(){
+
+      let test = document.querySelector("#test")
+      let form_position = document.querySelector("#center_form")
+      let message = document.querySelector("#message")
+      test.addEventListener("click", function(){
+          form_position.style.height = "20%"
           message.innerText = ""
 
-        })
+      })
+
+      let body = document.querySelector("body")
+      axios.get("{% url 'kf_main:get_top100' %}").then(function(response) {
+                let top100 = response.data
+                for(let i=0;i<Object.keys(top100).length;i++) {
+                      let deck = document.createElement("a")
+                      deck.className = "deck"
+                      deck.href = "../deck_detail/" + top100[i]["id"]
+                      deck.innerText = top100[i]["name"]
+                      body.appendChild(deck) 
+                  }
+                });
+                
     </script>
   </body>
 </html>

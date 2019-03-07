@@ -41,6 +41,7 @@ body {
 }
 
 #center_form {
+  transition: height 2s;
   display: flex;
   height: 100%;
   width: 100%;

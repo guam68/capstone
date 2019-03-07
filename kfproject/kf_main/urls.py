@@ -10,4 +10,5 @@ urlpatterns = [
     path('deck_detail/<str:deck_id>', views.deck_detail, name='deck_detail'),
     path('nodes/', views.get_nodes, name='get_nodes'),
     path('tooltip/', views.get_tooltip, name='get_tooltip'),
+    path('top100/', views.get_top100, name='get_top100')
 ]
