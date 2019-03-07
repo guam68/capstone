@@ -23,6 +23,46 @@ def index(request):
     return render(request, 'kf_main/index.html')
 
 
+def search(request):
+    data = json.loads(request.body)
+    search_str = data['search']
+    deck_list = Deck2.objects.filter(name__icontains=search_str).order_by('name')
+
+    deck_dict={}
+    for i, deck in enumerate(deck_list):
+        deck_dict[i] = model_to_dict(deck)
+
+    # page = request.GET.get('page')
+    # paginator = Paginator(deck_list, 25)
+
+    # try:
+    #     decks = paginator.page(page)
+    # except PageNotAnInteger:
+    #     decks = paginator.page(1)
+    # except EmptyPage:
+    #     decks = paginator.page(paginator.num_pages)
+
+    # index = decks.number - 1 
+    # max_index = len(paginator.page_range)
+    # start_index = index - 3 if index >= 3 else 0
+    # end_index = index + 3 if index <= max_index - 3 else max_index
+    # page_range = list(paginator.page_range)[start_index:end_index]
+
+
+    # house_lists = [] 
+    # for deck in deck_list:
+    #     house_lists.append(deck.house_list)
+
+    context = {
+        # 'house_lists': house_lists,
+        # 'decks': decks,
+        # 'search_str': search_str,
+        # 'page_range': page_range,
+        'deck_dict': deck_dict
+    }
+
+    return JsonResponse(context)
+
 def deck_list(request):
     deck_name = request.GET.get('search')
     deck_list = Deck2.objects.filter(name__icontains=deck_name).order_by('name')

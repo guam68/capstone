@@ -13,7 +13,8 @@
   <body>
     <div id="background_div"></div>
 
-    <button id="test" type="submit">test</button>
+    <button class="deck_category" id="top100" type="submit">Top 100</button>
+    <button class="deck_category" id="search_results" type="submit">search</button>
 
     <form id="center_form" action="{% url 'kf_main:deck_search' %}" method="POST">
       {% csrf_token %}
@@ -33,27 +34,52 @@
       <div id="message"></div>
       {% endif %}
     </form>
+    
 
     <div class="deck_wrapper"></div>
 
     <script>
 
-      let test = document.querySelector("#test")
+      let deck_category = document.querySelectorAll(".deck_category")
       let form_position = document.querySelector("#center_form")
       let message = document.querySelector("#message")
-      test.addEventListener("click", function(){
-          form_position.style.height = "20%"
-          if (!(document.querySelector(".deck")))
-              message.innerText = "Loading..."
-
+      deck_category.forEach(function(category) {
+          category.addEventListener("click", function(){
+            form_position.style.height = "20%"
+            if (!(document.querySelector(".deck")))
+                message.innerText = "Loading..."
+            if (category.innerText == "Top 100"){
+                  top100()
+            } else if (category.innerText == "search"){
+                  search()
+            }
+        })
       })
-
       
-      axios.get("{% url 'kf_main:get_top100' %}").then(function(response) {
-                let top100 = response.data
-                  create_decks(top100, message)
-          
-                });
+
+      function top100(){
+        axios.get("{% url 'kf_main:get_top100' %}").then(function(response) {
+          let top100 = response.data
+               console.log(response.data)
+            create_decks(top100, message)
+          });
+      }
+
+      function search(){
+        let search = document.querySelector("#deck_search").value
+        axios.post("{% url 'kf_main:search' %}", {
+              "search": search
+              }, {
+                  headers: {
+                      "X-CSRFToken": "{{ csrf_token }}"
+                  },
+              }
+              ).then(function(response) {
+                    console.log(response.data['deck_dict'])
+                    let results = response.data
+                    create_decks(results["deck_dict"], message)
+          });
+      }
 
                 
       function create_decks(decks, message) {
