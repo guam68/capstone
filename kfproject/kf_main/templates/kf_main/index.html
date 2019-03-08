@@ -11,13 +11,9 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
-    <div id="background_div"></div>
-
     <button class="deck_category" id="top100" type="submit">Top 100</button>
-    <button class="deck_category" id="search_results" type="submit">search</button>
 
-    <form id="center_form" action="{% url 'kf_main:deck_search' %}" method="POST">
-      {% csrf_token %}
+    <div id="center_form">
       <div id="search_bar_div">
         <input
           id="deck_search"
@@ -25,7 +21,7 @@
           name="search_string"
           placeholder="Enter a deck name"
         />
-        <button id="deck_search_btn" type="submit">⌕</button>
+        <button class="deck_category" id="deck_search_btn" type="submit">⌕</button>
       </div>
 
       {% if message %}
@@ -33,90 +29,105 @@
       {% else %}
       <div id="message"></div>
       {% endif %}
-    </form>
-    
+    </div>
 
     <div class="deck_wrapper"></div>
+    <div class="pagination"></div>
 
     <script>
-
-      let deck_wrapper = document.querySelector(".deck_wrapper")
-      let deck_category = document.querySelectorAll(".deck_category")
-      let form_position = document.querySelector("#center_form")
-      let message = document.querySelector("#message")
+      let deck_wrapper = document.querySelector(".deck_wrapper");
+      let deck_category = document.querySelectorAll(".deck_category");
+      let form_position = document.querySelector("#center_form");
+      let message = document.querySelector("#message");
+      let page = 1;
 
       deck_category.forEach(function(category) {
-          category.addEventListener("click", function(){
-            form_position.style.height = "20%"
-                message.innerText = "Loading..."    //needs to be fixed for double click
-            if (category.innerText == "Top 100"){
-                  top100()
-            } else if (category.innerText == "search"){
-                  search()
-            }
-        })
-      })
-      
+        category.addEventListener("click", function() {
+          form_position.style.height = "20%";
+          message.innerText = "Loading..."; //needs to be fixed for double click
+          if (category.innerText == "Top 100") {
+            top100();
+          } else if (category.innerText == "⌕") {
+            search(page);
+          }
+        });
+      });
 
-      function top100(){
-        deck_wrapper.style.opacity = "0"
+      function top100() {
+        deck_wrapper.style.opacity = "0";
         axios.get("{% url 'kf_main:get_top100' %}").then(function(response) {
-          let top100 = response.data
-               console.log(response.data)
-            create_decks(top100, message)
-          });
+          let top100 = response.data;
+          console.log(response.data);
+          create_decks(top100, message);
+        });
       }
 
-      function search(){
-        let search = document.querySelector("#deck_search").value
-        let page = 1
-        if (document.querySelector(".active")){
-          let page = document.querySelector(".active")
-        }
-        deck_wrapper.style.opacity = "0"
-        axios.post("{% url 'kf_main:search' %}", {
-              "search": search,
-              "page": page
-              }, {
-                  headers: {
-                      "X-CSRFToken": "{{ csrf_token }}"
-                  },
+      function search(pg) {
+        let search = document.querySelector("#deck_search").value;
+        deck_wrapper.style.opacity = "0";
+        axios
+          .post(
+            "{% url 'kf_main:search' %}",
+            {
+              search: search,
+              page: pg
+            },
+            {
+              headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
               }
-              ).then(function(response) {
-                    clear_decks() 
-                    console.log(response.data['deck_dict'])
-                    let results = response.data
-                    console.log(results["deck_dict2"])
-                    create_decks(results["deck_dict2"], message)
-                    paginate(results["page"])
+            }
+          )
+          .then(function(response) {
+            clear_decks();
+            let results = response.data;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            create_decks(results["deck_dict2"], message);
+            paginate(results["page_range"]);
           });
       }
 
-      function paginate(page){
-        console.log(page)
+      function paginate(page_range) {
+        let pagination = document.querySelector(".pagination");
+
+        for (let i = 0; i < page_range.length; i++) {
+          let page_link = document.createElement("div");
+          page_link.className = "page";
+          if (page_range[i] == page) {
+            page_link.id = "active";
+          }
+          page_link.onclick = function() {
+            deck_wrapper.style.opacity = "0";
+            while (pagination.firstChild) {
+              pagination.firstChild.remove();
+            }
+            page = this.innerText;
+            search(page_range[i]);
+          };
+          page_link.innerText = page_range[i];
+          pagination.appendChild(page_link);
+        }
       }
 
       function clear_decks() {
-
         while (deck_wrapper.firstChild) {
-            deck_wrapper.firstChild.remove();
+          deck_wrapper.firstChild.remove();
         }
       }
-                
+
       function create_decks(decks, message) {
-        let deck_wrapper = document.querySelector(".deck_wrapper")
-        clear_decks(deck_wrapper)
-        
-        for(let i=0;i<Object.keys(decks).length;i++) {
-                      let deck = document.createElement("a")
-                      deck.className = "deck"
-                      deck.id = i
-                      deck.href = "../deck_detail/" + decks[i]["id"]
-                      deck.innerText =decks[i]["name"]
-                      deck_wrapper.appendChild(deck)
-                  }
-        deck_wrapper.style.opacity = "1"
-        message.innerText = ""
+        clear_decks(deck_wrapper);
+
+        for (let i = 0; i < Object.keys(decks).length; i++) {
+          let deck = document.createElement("a");
+          deck.className = "deck";
+          deck.id = i;
+          deck.href = "../deck_detail/" + decks[i]["id"];
+          deck.innerText = decks[i]["name"];
+          deck_wrapper.appendChild(deck);
+        }
+        deck_wrapper.style.opacity = "1";
+        message.innerText = "";
       }
     </script>
   </body>

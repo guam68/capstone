@@ -1,10 +1,14 @@
 
 body {
-  background-color: #050e13;
   margin: 0;
   color: whitesmoke;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-size: 24px;
+  background-color: #050e13;
+  background-image: url("images/background.png");
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 #background_div {
@@ -64,14 +68,13 @@ body {
   justify-content: center;
   align-content: center;
   align-items: center;
-  transition: opacity .5s ease-in;
+  transition: opacity .3s ease-in;
 }
 
 .deck_wrapper .deck {
   color: whitesmoke;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin: 2px;
-  margin-left: 40px;
   padding : 5px 20px;
   text-decoration: none;
   background: rgba(65, 65, 65, 0.856);
@@ -90,19 +93,24 @@ body {
   display: flex;
   justify-content: center;
   align-content: center;
+  color: whitesmoke;
 }
 
-.pagination a {
-  color: black;
+.pagination div {
   float: left;
+  background-color: rgba(65, 65, 65, 0.856);
   padding: 8px 16px;
+  margin: 8px 2px 40px;
   text-decoration: none;
   transition: background-color .3s;
 }
 
-.pagination a.active {
-  background-color: rgb(74, 126, 179);
-  color: white;
+.pagination #active {
+  background-color: #324b52;
 }
 
-.pagination a:hover:not(.active) {background-color: #ddd;}
+.pagination div:hover:not(#active) {background-color: #ddd;}
+
+html {
+  scroll-behavior: smooth;
+}

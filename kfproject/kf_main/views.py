@@ -52,8 +52,6 @@ def search(request):
     deck_dict2={}
     for i, deck in enumerate(decks):
         deck_dict2[i] = model_to_dict(deck)
-    print(deck_dict2)
-    print(deck_dict)
     # house_lists = [] 
     # for deck in deck_list:
     #     house_lists.append(deck.house_list)
@@ -62,7 +60,7 @@ def search(request):
     context = {
         # 'house_lists': house_lists,
         # 'decks': decks,
-        # 'search_str': search_str,
+        'search_str': search_str,
         'page_range': page_range,
         'deck_dict': deck_dict,
         'deck_dict2': deck_dict2
