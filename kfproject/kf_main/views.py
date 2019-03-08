@@ -52,13 +52,13 @@ def search(request):
     deck_dict2={}
     for i, deck in enumerate(decks):
         deck_dict2[i] = model_to_dict(deck)
-    # house_lists = [] 
-    # for deck in deck_list:
-    #     house_lists.append(deck.house_list)
 
+    house_lists = [] 
+    for deck in decks:
+        house_lists.append(deck.house_list)
 
     context = {
-        # 'house_lists': house_lists,
+        'house_lists': house_lists,
         # 'decks': decks,
         'search_str': search_str,
         'page_range': page_range,
@@ -397,11 +397,20 @@ def get_top100(request):
 
         top100 = ordered_list + top100
 
+    house_lists = [] 
+    for deck in top100[:100]:
+        house_lists.append(deck.house_list)
+
     top_dict={}
     for i, deck in enumerate(top100[:100]):
         top_dict[i] = model_to_dict(deck)
+
+    context = {
+        'top_dict': top_dict,
+        'house_lists': house_lists
+    }
         
-    return JsonResponse(top_dict)
+    return JsonResponse(context)
                 
                 
 def get_top_cards():

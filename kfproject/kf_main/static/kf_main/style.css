@@ -72,6 +72,7 @@ body {
 }
 
 .deck_wrapper .deck {
+  position: relative;
   color: whitesmoke;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin: 2px;
@@ -113,4 +114,10 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+.house_imgs {
+  position: absolute;
+  right: 20px;
+  top: 8px;
 }
