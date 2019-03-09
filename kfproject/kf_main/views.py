@@ -20,7 +20,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 def index(request):
-    return render(request, 'kf_main/index.html')
+    return render(request, 'kf_main/index.html', {'message': '', 'search': '#'})
 
 
 def search(request):
@@ -105,15 +105,15 @@ def deck_list(request):
 
 def deck_search(request):
 
-    deck_name = request.POST['search_string']
-    deck_list = Deck2.objects.filter(name__icontains=deck_name)
+    search = request.POST['search_string']
+    deck_list = Deck2.objects.filter(name__icontains=search)
 
     if not deck_list:
-        return render(request, 'kf_main/index.html', {'message': 'No decks found'})
+        return render(request, 'kf_main/index.html', {'message': 'No decks found', 'search': '⌕'})
     elif len(deck_list) == 1:
         return HttpResponseRedirect(reverse('kf_main:deck_detail', args=(deck_list[0].id,)))
     else:
-        return HttpResponseRedirect(reverse('kf_main:deck_list') + '?search=' + deck_name)
+        return render(request, 'kf_main/index.html', {'message': '', 'search': search})
 
 
 def get_tooltip(request):

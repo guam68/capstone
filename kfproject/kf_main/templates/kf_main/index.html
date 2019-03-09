@@ -42,12 +42,12 @@
       let pagination = document.querySelector(".pagination");
       let page = 1;
 
+      search(page)
 
       deck_category.forEach(function(category) {
         category.addEventListener("click", function() {
           clear_pagination()
-          form_position.style.height = "20%";
-          message.innerText = "Loading..."; //needs to be fixed for double click
+          translate_form()
           if (category.innerText == "Top 100") {
             top100();
           } else if (category.innerText == "⌕") {
@@ -57,6 +57,11 @@
         });
       });
 
+
+      function translate_form(){
+        form_position.style.height = "20%";
+        message.innerText = "Loading...";
+      }
 
       function top100() {
         deck_wrapper.style.opacity = "0";
@@ -70,7 +75,15 @@
 
 
       function search(pg) {
-        let search = document.querySelector("#deck_search").value;
+        let search_str = document.querySelector("#deck_search").value;
+        let search = ""
+        let detail_search = "{{ search }}"
+        if (detail_search != "#"){
+          search = detail_search
+          translate_form()
+        } else if (search_str == ""){
+            return
+        } else { search = search_str}
         document.querySelector("#deck_search").value = ""
         deck_wrapper.style.opacity = "0";
         axios
