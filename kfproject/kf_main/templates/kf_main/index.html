@@ -11,7 +11,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
-    <button class="deck_category" id="top100" type="submit">Top 100</button>
+    <button class="deck_category" class="nav" id="top100" type="submit">Top 100</button>
 
     <form id="center_form" onsubmit="return false">
       <div id="search_bar_div">
@@ -29,6 +29,7 @@
       {% else %}
       <div id="message"></div>
       {% endif %}
+      
     </form>
 
     <div class="deck_wrapper"></div>
@@ -42,6 +43,7 @@
       let pagination = document.querySelector(".pagination");
       let page = 1;
 
+      if (document.querySelector("#deck_search").value != ""){translate_form()}
       search(page)
 
       deck_category.forEach(function(category) {
@@ -49,6 +51,7 @@
           clear_pagination()
           translate_form()
           if (category.innerText == "Top 100") {
+            document.querySelector("#deck_search").value = ""
             top100();
           } else if (category.innerText == "⌕") {
             page = 1
@@ -78,13 +81,20 @@
         let search_str = document.querySelector("#deck_search").value;
         let search = ""
         let detail_search = "{{ search }}"
-        if (detail_search != "#"){
+
+        if (search_str != ""){
+          search = search_str
+        } else if (detail_search != "#"){
           search = detail_search
           translate_form()
-        } else if (search_str == ""){
-            return
-        } else { search = search_str}
-        document.querySelector("#deck_search").value = ""
+        } else {return}
+        // if (detail_search != "#" && search_str == ""){
+        //   search = detail_search
+        //   translate_form()
+        // } else if (search_str == ""){
+        //     return
+        // } else { search = search_str}
+        // document.querySelector("#deck_search").value = ""
         deck_wrapper.style.opacity = "0";
         axios
           .post(
@@ -103,6 +113,10 @@
             clear_decks();
             let results = response.data;
             window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (results["deck_dict2"]["0"] == null){
+              message.innerText = "No decks found"
+              return
+            }
             create_decks(results["deck_dict2"], message, results["house_lists"]);
             paginate(results["page_range"]);
           });

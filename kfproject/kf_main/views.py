@@ -26,6 +26,7 @@ def index(request):
 def search(request):
     data = json.loads(request.body)
     search_str = data['search']
+    print(search_str)
     deck_list = Deck2.objects.filter(name__icontains=search_str).order_by('name')
 
     deck_dict={}
@@ -68,39 +69,39 @@ def search(request):
 
     return JsonResponse(context)
 
-def deck_list(request):
-    deck_name = request.GET.get('search')
-    deck_list = Deck2.objects.filter(name__icontains=deck_name).order_by('name')
+# def deck_list(request):
+#     deck_name = request.GET.get('search')
+#     deck_list = Deck2.objects.filter(name__icontains=deck_name).order_by('name')
 
-    page = request.GET.get('page')
-    paginator = Paginator(deck_list, 25)
+#     page = request.GET.get('page')
+#     paginator = Paginator(deck_list, 25)
 
-    try:
-        decks = paginator.page(page)
-    except PageNotAnInteger:
-        decks = paginator.page(1)
-    except EmptyPage:
-        decks = paginator.page(paginator.num_pages)
+#     try:
+#         decks = paginator.page(page)
+#     except PageNotAnInteger:
+#         decks = paginator.page(1)
+#     except EmptyPage:
+#         decks = paginator.page(paginator.num_pages)
 
-    index = decks.number - 1 
-    max_index = len(paginator.page_range)
-    start_index = index - 3 if index >= 3 else 0
-    end_index = index + 3 if index <= max_index - 3 else max_index
-    page_range = list(paginator.page_range)[start_index:end_index]
+#     index = decks.number - 1 
+#     max_index = len(paginator.page_range)
+#     start_index = index - 3 if index >= 3 else 0
+#     end_index = index + 3 if index <= max_index - 3 else max_index
+#     page_range = list(paginator.page_range)[start_index:end_index]
 
 
-    house_lists = [] 
-    for deck in deck_list:
-        house_lists.append(deck.house_list)
+#     house_lists = [] 
+#     for deck in deck_list:
+#         house_lists.append(deck.house_list)
 
-    context = {
-        'house_lists': house_lists,
-        'decks': decks,
-        'deck_name': deck_name, 
-        'page_range': page_range,
-    }
+#     context = {
+#         'house_lists': house_lists,
+#         'decks': decks,
+#         'deck_name': deck_name, 
+#         'page_range': page_range,
+#     }
 
-    return render(request, 'kf_main/deck_list.html', context)
+#     return render(request, 'kf_main/deck_list.html', context)
 
 
 def deck_search(request):
@@ -109,7 +110,7 @@ def deck_search(request):
     deck_list = Deck2.objects.filter(name__icontains=search)
 
     if not deck_list:
-        return render(request, 'kf_main/index.html', {'message': 'No decks found', 'search': '⌕'})
+        return render(request, 'kf_main/index.html', {'message': 'No decks found', 'search': '#'})
     elif len(deck_list) == 1:
         return HttpResponseRedirect(reverse('kf_main:deck_detail', args=(deck_list[0].id,)))
     else:

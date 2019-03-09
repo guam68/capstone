@@ -210,9 +210,6 @@
       }
 
 
-
-
-
       {% autoescape off %}
       make_pie({{ type_nums|safe }})
       generate_barchart({{ power_list }}, "#pwr_dist", 0, "Creature Power")
@@ -430,8 +427,6 @@
               .data(force.links())
               .enter().append("line")
               .attr("class", "link");
-
-          
 
           let node = svg.selectAll(".node")
               .data(force.nodes())
