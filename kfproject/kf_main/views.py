@@ -107,7 +107,10 @@ def search(request):
 def deck_search(request):
 
     search = request.POST['search_string']
-    deck_list = Deck2.objects.filter(name__icontains=search)
+    if search:
+        deck_list = Deck2.objects.filter(name__icontains=search)
+    else: 
+        deck_list = []
 
     if not deck_list:
         return render(request, 'kf_main/index.html', {'message': 'No decks found', 'search': '#'})

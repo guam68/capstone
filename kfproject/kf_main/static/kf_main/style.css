@@ -23,6 +23,39 @@ body {
   position: absolute;
 }
 
+.nav{
+  display: flex;
+  flex-direction: row;
+  margin: 40px;
+  align-content: center;
+  justify-content: center;
+}
+
+.nav .deck_category{
+  margin: 0 20px;
+
+  background-color: #00000000;
+  color: seashell;
+  border-width: 2px;
+  border-style: solid;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  transition: 0.71s;
+  font-size: 16px;
+  transition-property: background-color;
+  cursor: pointer;
+}
+
+.nav .deck_category:hover {
+  background-color: #ddd;
+}
+
+.nav .deck_category:active {
+  transform: translateY(1px);
+}
+
 #deck_search {
   width:88%;
   height: 50px;
@@ -47,7 +80,7 @@ body {
 #center_form {
   transition: height 2s;
   display: flex;
-  height: 90%;
+  height: 70%;
   width: 100%;
   align-items: center;
   justify-content: center;
@@ -122,6 +155,3 @@ html {
   top: 8px;
 }
 
-#nav {
-  
-}

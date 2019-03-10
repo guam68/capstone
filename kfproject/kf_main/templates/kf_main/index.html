@@ -11,7 +11,10 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
-    <button class="deck_category" class="nav" id="top100" type="submit">Top 100</button>
+    <div class="nav">
+      <button class="deck_category" id="top100" type="submit">Top 100</button>
+      <button class="deck_category" id="top100" type="submit">Top 100</button>
+    </div>
 
     <form id="center_form" onsubmit="return false">
       <div id="search_bar_div">
@@ -29,7 +32,6 @@
       {% else %}
       <div id="message"></div>
       {% endif %}
-      
     </form>
 
     <div class="deck_wrapper"></div>
@@ -43,25 +45,27 @@
       let pagination = document.querySelector(".pagination");
       let page = 1;
 
-      if (document.querySelector("#deck_search").value != ""){translate_form()}
-      search(page)
+      if (document.querySelector("#deck_search").value != "") {
+        translate_form();
+      }
+      search(page);
 
       deck_category.forEach(function(category) {
         category.addEventListener("click", function() {
-          clear_pagination()
-          translate_form()
+          clear_pagination();
+          translate_form();
           if (category.innerText == "Top 100") {
-            document.querySelector("#deck_search").value = ""
+            document.querySelector("#deck_search").value = "";
             top100();
           } else if (category.innerText == "⌕") {
-            page = 1
+            //change this to check id
+            page = 1;
             search(page);
           }
         });
       });
 
-
-      function translate_form(){
+      function translate_form() {
         form_position.style.height = "20%";
         message.innerText = "Loading...";
       }
@@ -76,25 +80,20 @@
         });
       }
 
-
       function search(pg) {
         let search_str = document.querySelector("#deck_search").value;
-        let search = ""
-        let detail_search = "{{ search }}"
+        let search = "";
+        let detail_search = "{{ search }}";
 
-        if (search_str != ""){
-          search = search_str
-        } else if (detail_search != "#"){
-          search = detail_search
-          translate_form()
-        } else {return}
-        // if (detail_search != "#" && search_str == ""){
-        //   search = detail_search
-        //   translate_form()
-        // } else if (search_str == ""){
-        //     return
-        // } else { search = search_str}
-        // document.querySelector("#deck_search").value = ""
+        if (search_str != "") {
+          search = search_str;
+        } else if (detail_search != "#") {
+          search = detail_search;
+          translate_form();
+        } else {
+          return;
+        }
+
         deck_wrapper.style.opacity = "0";
         axios
           .post(
@@ -112,16 +111,15 @@
           .then(function(response) {
             clear_decks();
             let results = response.data;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            if (results["deck_dict2"]["0"] == null){
-              message.innerText = "No decks found"
-              return
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            if (results["deck_dict2"]["0"] == null) {
+              message.innerText = "No decks found";
+              return;
             }
             create_decks(results["deck_dict2"], message, results["house_lists"]);
             paginate(results["page_range"]);
           });
       }
-
 
       function paginate(page_range) {
         for (let i = 0; i < page_range.length; i++) {
@@ -132,7 +130,7 @@
           }
           page_link.onclick = function() {
             deck_wrapper.style.opacity = "0";
-            clear_pagination() 
+            clear_pagination();
             page = this.innerText;
             search(page_range[i]);
           };
@@ -141,20 +139,17 @@
         }
       }
 
-
       function clear_decks() {
         while (deck_wrapper.firstChild) {
           deck_wrapper.firstChild.remove();
         }
       }
 
-
-      function clear_pagination(){
+      function clear_pagination() {
         while (pagination.firstChild) {
-              pagination.firstChild.remove();
-            }
+          pagination.firstChild.remove();
+        }
       }
-      
 
       function create_decks(decks, message, house_lists) {
         clear_decks(deck_wrapper);
@@ -168,20 +163,19 @@
           deck_wrapper.appendChild(deck);
         }
 
-        let deck_divs = document.querySelectorAll(".deck")
+        let deck_divs = document.querySelectorAll(".deck");
         for (let i = 0; i < Object.keys(deck_divs).length; i++) {
-            let house_imgs = document.createElement("div")
-            house_imgs.className = "house_imgs"
-            deck_divs[i].appendChild(house_imgs)
-        
-            house_lists[i].forEach(function(house) {
-              let house_img = document.createElement("img")
-              house_img.src = "../static/kf_main/images/" + house + ".png"
-              house_img.width = "25"
-              house_img.class = "house_img"
-              house_imgs.appendChild(house_img)
-            })
-            
+          let house_imgs = document.createElement("div");
+          house_imgs.className = "house_imgs";
+          deck_divs[i].appendChild(house_imgs);
+
+          house_lists[i].forEach(function(house) {
+            let house_img = document.createElement("img");
+            house_img.src = "../static/kf_main/images/" + house + ".png";
+            house_img.width = "25";
+            house_img.class = "house_img";
+            house_imgs.appendChild(house_img);
+          });
         }
         deck_wrapper.style.opacity = "1";
         message.innerText = "";
