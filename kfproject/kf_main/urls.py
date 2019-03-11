@@ -10,5 +10,6 @@ urlpatterns = [
     path('nodes/', views.get_nodes, name='get_nodes'),
     path('tooltip/', views.get_tooltip, name='get_tooltip'),
     path('top100/', views.get_top100, name='get_top100'),
-    path('search/', views.search, name='search')
+    path('search/', views.search, name='search'),
+    path('get_card_freq/', views.get_card_freq, name='get_card_freq')
 ]

@@ -95,8 +95,8 @@ body {
 }
 
 .deck_wrapper {
-  opacity: 0;
   display: flex;
+  opacity: 0;
   flex-direction: column; 
   justify-content: center;
   align-content: center;
@@ -155,3 +155,28 @@ html {
   top: 8px;
 }
 
+.house_wrapper {
+  display:flex; 
+  opacity: 0;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity .3s ease-in;
+}
+
+.card_house {
+	padding: 8px;
+	width: 30%;
+}
+
+.card {
+  font-size: 14px;
+  width: 98%;
+  color: whitesmoke;
+  background: rgba(71, 69, 75, 0.897);
+  padding: 6px 1%; 
+  margin-bottom: 2px;
+}
+
+.house_logo {
+  width:90px;
+}

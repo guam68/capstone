@@ -69,43 +69,8 @@ def search(request):
 
     return JsonResponse(context)
 
-# def deck_list(request):
-#     deck_name = request.GET.get('search')
-#     deck_list = Deck2.objects.filter(name__icontains=deck_name).order_by('name')
-
-#     page = request.GET.get('page')
-#     paginator = Paginator(deck_list, 25)
-
-#     try:
-#         decks = paginator.page(page)
-#     except PageNotAnInteger:
-#         decks = paginator.page(1)
-#     except EmptyPage:
-#         decks = paginator.page(paginator.num_pages)
-
-#     index = decks.number - 1 
-#     max_index = len(paginator.page_range)
-#     start_index = index - 3 if index >= 3 else 0
-#     end_index = index + 3 if index <= max_index - 3 else max_index
-#     page_range = list(paginator.page_range)[start_index:end_index]
-
-
-#     house_lists = [] 
-#     for deck in deck_list:
-#         house_lists.append(deck.house_list)
-
-#     context = {
-#         'house_lists': house_lists,
-#         'decks': decks,
-#         'deck_name': deck_name, 
-#         'page_range': page_range,
-#     }
-
-#     return render(request, 'kf_main/deck_list.html', context)
-
 
 def deck_search(request):
-
     search = request.POST['search_string']
     if search:
         deck_list = Deck2.objects.filter(name__icontains=search)
@@ -128,7 +93,6 @@ def get_tooltip(request):
 
 
 def deck_detail(request, deck_id):
-
     data = kf2.get_specific_deck(deck_id)
     deck = Deck2.objects.get(id=deck_id)        
     power_list, type_nums, deck_amber = get_stats(data[1])
@@ -141,7 +105,6 @@ def deck_detail(request, deck_id):
     for card_id in data[1]:
         card_objects.append(Card.objects.get(id=card_id))
         
-
     context = {
         'deck': deck,
         'house1': deck.house_list[0],
@@ -167,7 +130,6 @@ def deck_detail(request, deck_id):
 
 
 def get_stats(deck_cards):      # list of card ids
-    # _, deck_cards, _ = data
     power_list = {} 
     deck_amber = 0
     type_nums = {
@@ -286,13 +248,8 @@ def get_avg_games():
 
 
 def get_nodes(request):
-    # deck_id = request.GET('deck_id')
     data = json.loads(request.body)
     deck_id = data['deck_id']
-    print('initial load')
-    # cur = connection.cursor()
-    # cur.execute('SELECT house FROM deck_house where deck_id = %s', (deck_id,))
-    # houses = cur.fetchall()
     user_deck = Deck2.objects.get(id=deck_id)
     houses = user_deck.house_list
     decks = Deck2.objects.all()
@@ -303,15 +260,6 @@ def get_nodes(request):
             continue
         else:
             house_match_list.append(deck)
-
-    # cur.execute('''
-        #     SELECT deck_id from deck_house
-        #     where house in (%s, %s, %s)   
-        #     group by deck_id                            
-        #     having count(distinct house) = 3
-        #     ;''', [user_deck.house_list[0], user_deck.house_list[1], user_deck.house_list[2]])
-        
-        # decks = cur.fetchall()
 
     percent_match = []
     
@@ -417,8 +365,10 @@ def get_top100(request):
     return JsonResponse(context)
                 
                 
-def get_top_cards():
-    decks = get_top100()
+def get_card_freq(request):
+    import requests
+    decks = json.loads(get_top100(None).content.decode("utf-8"))['top_dict']
+
     houses = {
         'Brobnar':{},
         'Dis':{},
@@ -429,8 +379,9 @@ def get_top_cards():
         'Untamed':{},
     }
     
-    for deck in decks:
-        for card_id in deck.card_list:
+    # print(decks['top_dict']['0'])
+    for i in decks:
+        for card_id in decks[i]['card_list']:
             card = Card.objects.get(id=card_id)
 
             if card.card_title in houses[card.house]:
@@ -438,18 +389,19 @@ def get_top_cards():
             else:
                 houses[card.house][card.card_title] = 1
     
+    sorted_houses = {}
     for house in houses:
         sorted_house = sorted(houses[house].items(), key=lambda kv: kv[1], reverse=True)
-        print(house)
-        print(sorted_house)
+        sorted_houses[house] = [list(tup) for tup in sorted_house]
 
-    
-    return houses
+    print(sorted_houses)
+
+    return JsonResponse(sorted_houses)
             
 
 
 # get_top100("w")
-# get_top_cards()
+# get_card_freq("k")
 # update_dist()
 # kf2.set_main_data(kf2.page, kf2.site)
 # get_nodes('eb5d4c4a-5957-4276-ab9a-0d1b19f42e81')

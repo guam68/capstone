@@ -13,7 +13,7 @@
   <body>
     <div class="nav">
       <button class="deck_category" id="top100" type="submit">Top 100</button>
-      <button class="deck_category" id="top100" type="submit">Top 100</button>
+      <button class="deck_category" id="card_freq" type="submit">Card Frequency</button>
     </div>
 
     <form id="center_form" onsubmit="return false">
@@ -35,6 +35,7 @@
     </form>
 
     <div class="deck_wrapper"></div>
+    <div class="house_wrapper"></div>
     <div class="pagination"></div>
 
     <script>
@@ -43,6 +44,7 @@
       let form_position = document.querySelector("#center_form");
       let message = document.querySelector("#message");
       let pagination = document.querySelector(".pagination");
+      let house_wrapper = document.querySelector(".house_wrapper");
       let page = 1;
 
       if (document.querySelector("#deck_search").value != "") {
@@ -61,6 +63,8 @@
             //change this to check id
             page = 1;
             search(page);
+          } else if (category.id == "card_freq") {
+            card_freq();
           }
         });
       });
@@ -71,11 +75,12 @@
       }
 
       function top100() {
-        deck_wrapper.style.opacity = "0";
+        clear_decks()
+        // house_wrapper.style.display = "none";
+        // deck_wrapper.style.display = "none"
         axios.get("{% url 'kf_main:get_top100' %}").then(function(response) {
           let top100 = response.data["top_dict"];
           let house_lists = response.data["house_lists"];
-          console.log(top100);
           create_decks(top100, message, house_lists);
         });
       }
@@ -95,6 +100,7 @@
         }
 
         deck_wrapper.style.opacity = "0";
+        // deck_wrapper.style.display = "none";
         axios
           .post(
             "{% url 'kf_main:search' %}",
@@ -109,7 +115,9 @@
             }
           )
           .then(function(response) {
-            clear_decks();
+        clear_decks()
+            // house_wrapper.style.display = "none";
+        // deck_wrapper.style.display = "none"
             let results = response.data;
             window.scrollTo({ top: 0, behavior: "smooth" });
             if (results["deck_dict2"]["0"] == null) {
@@ -121,6 +129,41 @@
           });
       }
 
+      function card_freq() {
+        house_wrapper.style.display = "flex"
+            clear_decks();
+        // house_wrapper.style.display = "none";
+        // deck_wrapper.style.display = "none"
+
+        axios.get("{% url 'kf_main:get_card_freq' %}").then(function(response) {
+          message.innerText = ""
+          // house_wrapper.style.display = "flex";
+          house_wrapper.style.opacity = "1";
+          let houses = response.data;
+
+          Object.keys(houses).forEach(function(card_house) {
+            let house = document.createElement("div");
+            let house_img = document.createElement("img");
+            house_img.className = "house_logo";
+            house.innertext = card_house;
+            house.className = "card_house";
+            house.id = card_house;
+
+            get_house_style(house, house_img);
+            house_wrapper.appendChild(house);
+            house.appendChild(house_img);
+
+            let current_house = document.querySelector("#" + card_house);
+            for (let i = 0; i < houses[card_house].length; i++) {
+              let card = document.createElement("div");
+              card.className = "card";
+              card.innerText = houses[card_house][i];
+              current_house.appendChild(card);
+            }
+          });
+        });
+      }
+
       function paginate(page_range) {
         for (let i = 0; i < page_range.length; i++) {
           let page_link = document.createElement("div");
@@ -129,7 +172,8 @@
             page_link.id = "active";
           }
           page_link.onclick = function() {
-            deck_wrapper.style.opacity = "0";
+            deck_wrapper.style.opacity = "0"
+            // deck_wrapper.style.display = "none";
             clear_pagination();
             page = this.innerText;
             search(page_range[i]);
@@ -140,9 +184,13 @@
       }
 
       function clear_decks() {
-        while (deck_wrapper.firstChild) {
-          deck_wrapper.firstChild.remove();
+        house_wrapper.style.opacity = "0";
+        deck_wrapper.style.opacity = "0";
+
+        while (document.querySelector(".deck")) {
+          document.querySelector(".deck").remove();
         }
+     
       }
 
       function clear_pagination() {
@@ -153,6 +201,8 @@
 
       function create_decks(decks, message, house_lists) {
         clear_decks(deck_wrapper);
+        // house_wrapper.style.display = "none";
+        // deck_wrapper.style.display = "none"
 
         for (let i = 0; i < Object.keys(decks).length; i++) {
           let deck = document.createElement("a");
@@ -177,8 +227,35 @@
             house_imgs.appendChild(house_img);
           });
         }
+        // deck_wrapper.style.display = "flex";
         deck_wrapper.style.opacity = "1";
+        house_wrapper.style.display = "none"
         message.innerText = "";
+      }
+
+      function get_house_style(house, house_img) {
+        if (house.id == "Brobnar") {
+          house.style.background = "#f15922";
+          house_img.src = "{% static 'kf_main/images/brobnar.png' %}";
+        } else if (house.id == "Shadows") {
+          house.style.background = "#febc3f";
+          house_img.src = "{% static 'kf_main/images/shadows.png' %}";
+        } else if (house.id == "Untamed") {
+          house.style.background = "#167449";
+          house_img.src = "{% static 'kf_main/images/untamed.png' %}";
+        } else if (house.id == "Logos") {
+          house.style.background = "#c95827";
+          house_img.src = "{% static 'kf_main/images/logos.png' %}";
+        } else if (house.id == "Dis") {
+          house.style.background = "#292a2a";
+          house_img.src = "{% static 'kf_main/images/dis.png' %}";
+        } else if (house.id == "Sanctum") {
+          house.style.background = "#1483bc";
+          house_img.src = "{% static 'kf_main/images/sanctum.png' %}";
+        } else if (house.id == "Mars") {
+          house.style.background = "#4f2e91";
+          house_img.src = "{% static 'kf_main/images/mars.png' %}";
+        }
       }
     </script>
   </body>
