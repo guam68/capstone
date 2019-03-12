@@ -90,7 +90,7 @@ Once on the deck detail page, the user will be presented with the information an
 ### Week 3
 
 - [x] Interaction and information for fdg nodes
-- [ ] Make site look less ugly
+- [x] Make site look less ugly
 
 ### Post Class
 
@@ -105,3 +105,11 @@ _________________________
 - [ ] User login system
 - [ ] User profile page
 - [ ] User saved decks
+
+
+## Known Issues
+
+- blank search on the index page gives an infinite load screen
+- deck_wrapper does not fade out
+- nodes are calculated incorrectly. Need to set card to "None" after match and fix scale
+- no explaination/call to action for force diagram

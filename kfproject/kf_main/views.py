@@ -302,22 +302,6 @@ def update_dist():
         dist.save()
 
 
-# def get_top_house_cards(house):
-#     deck_count = Deck2.objects.filter(Q(wins__gt=0) | Q(losses__gt=0)).count()
-#     deck_list = Deck2.objects.filter(power_level__gt=1)
-#     top_decks = []
-#     print(deck_count)
-#     print(len(deck_list))
-
-#     for deck in deck_list:
-#         if deck.losses != 0 and deck.power_level == 2:
-#             if deck.wins / deck.losses >= 4:
-#                 top_decks.append(deck) 
-#         else:
-#             top_decks.append(deck)
-
-#     print(len(top_decks))
-
 def get_top100(request):
     top100 = []
     pwr_dict ={}
@@ -379,7 +363,6 @@ def get_card_freq(request):
         'Untamed':{},
     }
     
-    # print(decks['top_dict']['0'])
     for i in decks:
         for card_id in decks[i]['card_list']:
             card = Card.objects.get(id=card_id)
@@ -393,8 +376,6 @@ def get_card_freq(request):
     for house in houses:
         sorted_house = sorted(houses[house].items(), key=lambda kv: kv[1], reverse=True)
         sorted_houses[house] = [list(tup) for tup in sorted_house]
-
-    print(sorted_houses)
 
     return JsonResponse(sorted_houses)
             

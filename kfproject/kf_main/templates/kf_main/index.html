@@ -3,8 +3,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="HandheldFriendly" content="true" />
+    
     <title>Index</title>
     <link rel="icon" href="data:;base64,=" />
     <link rel="stylesheet" type="text/css" href="{% static 'kf_main/style.css' %}" />
@@ -56,11 +58,10 @@
         category.addEventListener("click", function() {
           clear_pagination();
           translate_form();
-          if (category.innerText == "Top 100") {
+          if (category.id == "top100") {
             document.querySelector("#deck_search").value = "";
             top100();
-          } else if (category.innerText == "⌕") {
-            //change this to check id
+          } else if (category.id == "deck_search_btn") {
             page = 1;
             search(page);
           } else if (category.id == "card_freq") {
@@ -75,9 +76,7 @@
       }
 
       function top100() {
-        clear_decks()
-        // house_wrapper.style.display = "none";
-        // deck_wrapper.style.display = "none"
+        clear_decks();
         axios.get("{% url 'kf_main:get_top100' %}").then(function(response) {
           let top100 = response.data["top_dict"];
           let house_lists = response.data["house_lists"];
@@ -86,6 +85,7 @@
       }
 
       function search(pg) {
+        house_wrapper.style.opacity = "0";
         let search_str = document.querySelector("#deck_search").value;
         let search = "";
         let detail_search = "{{ search }}";
@@ -100,7 +100,6 @@
         }
 
         deck_wrapper.style.opacity = "0";
-        // deck_wrapper.style.display = "none";
         axios
           .post(
             "{% url 'kf_main:search' %}",
@@ -115,9 +114,7 @@
             }
           )
           .then(function(response) {
-        clear_decks()
-            // house_wrapper.style.display = "none";
-        // deck_wrapper.style.display = "none"
+            clear_decks();
             let results = response.data;
             window.scrollTo({ top: 0, behavior: "smooth" });
             if (results["deck_dict2"]["0"] == null) {
@@ -130,16 +127,17 @@
       }
 
       function card_freq() {
-        house_wrapper.style.display = "flex"
-            clear_decks();
-        // house_wrapper.style.display = "none";
-        // deck_wrapper.style.display = "none"
+        clear_decks();
+        house_wrapper.style.display = "flex";
 
         axios.get("{% url 'kf_main:get_card_freq' %}").then(function(response) {
-          message.innerText = ""
-          // house_wrapper.style.display = "flex";
+          message.innerText = "";
           house_wrapper.style.opacity = "1";
           let houses = response.data;
+
+          if (document.querySelector(".card_house")) {
+            return;
+          }
 
           Object.keys(houses).forEach(function(card_house) {
             let house = document.createElement("div");
@@ -172,8 +170,7 @@
             page_link.id = "active";
           }
           page_link.onclick = function() {
-            deck_wrapper.style.opacity = "0"
-            // deck_wrapper.style.display = "none";
+            deck_wrapper.style.opacity = "0";
             clear_pagination();
             page = this.innerText;
             search(page_range[i]);
@@ -190,7 +187,6 @@
         while (document.querySelector(".deck")) {
           document.querySelector(".deck").remove();
         }
-     
       }
 
       function clear_pagination() {
@@ -201,8 +197,6 @@
 
       function create_decks(decks, message, house_lists) {
         clear_decks(deck_wrapper);
-        // house_wrapper.style.display = "none";
-        // deck_wrapper.style.display = "none"
 
         for (let i = 0; i < Object.keys(decks).length; i++) {
           let deck = document.createElement("a");
@@ -227,9 +221,8 @@
             house_imgs.appendChild(house_img);
           });
         }
-        // deck_wrapper.style.display = "flex";
         deck_wrapper.style.opacity = "1";
-        house_wrapper.style.display = "none"
+        house_wrapper.style.display = "none";
         message.innerText = "";
       }
 
