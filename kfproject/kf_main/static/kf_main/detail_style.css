@@ -137,7 +137,6 @@ div.tooltip {
     color:whitesmoke;
 }
 
-
 .link {
     fill: none;
     stroke: rgb(75, 75, 75);
@@ -154,7 +153,6 @@ div.tooltip {
     width: 500px;
 }
 
-
 #house_cards {
     color: whitesmoke;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -164,20 +162,14 @@ div.tooltip {
     margin: 50px;
 }
 
+.house_header {
+    display: flex;
+    justify-content: space-between;
+}
 
 .house {
-    position: relative;
-    z-index: 0;
     padding: 10px;
 }
-
-.house_img {
-    z-index: -1;
-    position: absolute;
-    right: 20px;
-    top: 0px;
-}
-
 
 .card {
     width: 400px;
@@ -185,11 +177,9 @@ div.tooltip {
     background: rgba(71, 69, 75, 0.897);
     padding: 6px 10px; 
     margin-bottom: 2px;
-}
-
-.rarity {
-    position: absolute;
-    right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .hex_wrap {
@@ -254,7 +244,6 @@ div.tooltip {
     height: 90%;
 }
 
-
 #amber {
     grid-column: 1/2;
     grid-row: 2/3;
@@ -282,9 +271,15 @@ div.tooltip {
         font-size: 1.5em;
     }
 
+    #search_bar_div {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
     #deck_search {
         height: 50px;
-        width: auto;
+        width: 80%;
     }
 
     #deck_search_btn {
