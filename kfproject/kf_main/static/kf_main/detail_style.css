@@ -277,12 +277,14 @@ div.tooltip {
 
 
 @media only screen and (max-width: 1250px) {
-    body{
-      font-size: 70%;
+
+    h1 {
+        font-size: 1.5em;
     }
 
     #deck_search {
         height: 50px;
+        width: auto;
     }
 
     #deck_search_btn {
@@ -290,10 +292,38 @@ div.tooltip {
         width: 50px;
     }
 
+    #deck_wrap {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 0;
+    }
+
+    .hex_wrap {
+        margin: 0;
+    }
+
     #position_form {
         position: unset;
         width: 100vw;
         display: flex;
         justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    #house_cards {
+        flex-direction: column;
+        margin: 20px;
+    }
+
+    #house_cards h1 {
+        font-size: 2em;
+    }
+
+    .house {
+        margin-bottom: 10px;
+    }
+
+    .card {
+        width: auto;
     }
 }  
