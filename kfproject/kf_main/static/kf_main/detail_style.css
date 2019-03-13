@@ -268,3 +268,32 @@ div.tooltip {
     border-left: 152px solid transparent;
     border-right: 152px solid transparent;
 }
+
+
+
+
+
+
+
+
+@media only screen and (max-width: 1250px) {
+    body{
+      font-size: 70%;
+    }
+
+    #deck_search {
+        height: 50px;
+    }
+
+    #deck_search_btn {
+        height: 50px;
+        width: 50px;
+    }
+
+    #position_form {
+        position: unset;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+    }
+}  

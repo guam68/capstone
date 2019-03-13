@@ -93,16 +93,25 @@ def get_tooltip(request):
 
 
 def deck_detail(request, deck_id):
-    data = kf2.get_specific_deck(deck_id)
+    # try:
+        # data = kf2.get_specific_deck(deck_id)
+    # except json.decoder.JSONDecodeError:
     deck = Deck2.objects.get(id=deck_id)        
-    power_list, type_nums, deck_amber = get_stats(data[1])
+    # power_list, type_nums, deck_amber = get_stats(data[1])
     global_dist = model_to_dict(Distribution.objects.get(id=1))
     top_dist = model_to_dict(Distribution.objects.get(id=2))
     g_action, g_artifact, g_creature, g_upgrade, g_amber = global_dist['action'], global_dist['artifact'], global_dist['creature'], global_dist['upgrade'], global_dist['amber']
     top_action, top_artifact, top_creature, top_upgrade, top_amber = top_dist['action'], top_dist['artifact'], top_dist['creature'], top_dist['upgrade'], top_dist['amber']
 
+    type_nums = []
+    type_nums.append({'type': 'action', 'amount': deck.num_action})
+    type_nums.append({'type': 'artifact', 'amount': deck.num_artifact})
+    type_nums.append({'type': 'creature', 'amount': deck.num_creature})
+    type_nums.append({'type': 'upgrade', 'amount': deck.num_upgrade})
+
     card_objects = [] 
-    for card_id in data[1]:
+    # for card_id in data[1]:
+    for card_id in deck.card_list:
         card_objects.append(Card.objects.get(id=card_id))
         
     context = {
@@ -111,8 +120,8 @@ def deck_detail(request, deck_id):
         'house2': deck.house_list[1],
         'house3': deck.house_list[2],
         'deck_card_list': card_objects,
-        'power_list': power_list,
-        'deck_amber': deck_amber,
+        'power_list': deck.creature_pwr,
+        'deck_amber': deck.bonus_amber,
         'type_nums': type_nums,
         'g_action': g_action,
         'g_artifact': g_artifact,
