@@ -313,12 +313,30 @@
 
 
       function generate_barchart(data_list, element_id, deck_amount, title) {
-          let svg_width = 800
-          if( title == "Creature Power"){width=400, svg_width=500} else {width=700}
-          let height = 400
+          console.log(document.querySelector(".bar_chart_top").offsetWidth)
+          let svg_width = document.querySelector(".bar_chart_top").offsetWidth   // percentage of viewport?
+          let svg_height= document.querySelector(".bar_chart_top").offsetHeight  // percentage of viewport?
+          let width = svg_width / 2 // controls height - divide for taller
+          let height = svg_height /1.5  
+
+        //   if (window.innerWidth >= 950){
+        //     svg_width = 800
+        //     height = 400
+        //     if(title == "Creature Power"){width=400, svg_width=500} else {width=700}
+        //   } else if (window.innerWidth <= 500){
+        //       svg_width = 200
+        //       width = 100
+        //       height = 100
+        //   }
+
+          let x_pos_start = 0 
+          
           let svg = d3v4.select(element_id).append("svg")
-              .attr("height", "100%")
-              .attr("width", "100%")
+              .attr("height", "90%")
+              .attr("width", "70%")
+              .attr('viewBox','0 0 '+width+' '+Math.min(width,height))
+              .attr('preserveAspectRatio','xMidYMid meet')
+              .style("background-color", "#a5a5a593")
 
           let bar_width = width / Object.values(data_list).length;
           let scale = d3v4.scaleLinear().domain([0, d3v4.max(Object.values(data_list))]).range([0, 200])
@@ -333,7 +351,7 @@
               .attr("class", "bar")
               .attr("height", function (d) {return scale(d);})
               .attr("width", bar_width*.95)
-              .attr("x", function(d, i) {return (i*bar_width)+50})
+              .attr("x", function(d, i) {return (i*bar_width) + x_pos_start})
               .attr("y", function(d, i) {return 250 - scale(d)})
 
               .data(Object.keys(data_list))
@@ -360,7 +378,7 @@
               .enter().append("text")
               .text(function(d) {return d})
                   .attr("class", "bar_text")
-                  .attr("x", function(d, i) {return (i*bar_width)+bar_width/2+50})
+                  .attr("x", function(d, i) {return (i*bar_width)+bar_width/2 + x_pos_start})
                   .attr("y", 250 + 20)
 
 
@@ -545,7 +563,7 @@
               for (let i = 0; i < cur_div.length; i++) {
               cur_div[i].style.display = "none";
               }
-              cur_div[slide_idx-1].style.display = "block";
+              cur_div[slide_idx-1].style.display = "flex";
           }
           else {
               let cur_div = document.querySelectorAll(".bar_chart_top");
@@ -554,7 +572,7 @@
               for (let i = 0; i < cur_div.length; i++) {
               cur_div[i].style.display = "none";
               }
-              cur_div[slide_idx_top-1].style.display = "block";  }
+              cur_div[slide_idx_top-1].style.display = "flex";  }
       }
     </script>
   </body>

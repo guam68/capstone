@@ -55,22 +55,30 @@ body {
 .bar_chart {
     color:whitesmoke;
     display:none;
-    height: 300px;
-    width: 800px;
+    height: 100%;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    border-style: dashed;
+    border-color: whitesmoke;
 }
 
 .bar_chart_top {
     display:none;
-    height: 300px;
-    width: 800px;
+    height: 100%;
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+    border-style: dashed;
+    border-color: whitesmoke;
 }
 
 svg .bar_text {
     fill: whitesmoke;
     text-anchor: middle;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    font-size: 12px;
-    font-weight: bold;
+    font-size: 8px;
+    /* font-weight: bold; */
 }
 
 .bar:hover {
@@ -241,7 +249,7 @@ div.tooltip {
     display:flex;
     align-items: center;
     justify-content: center;
-    height: 90%;
+    height: 100%;
 }
 
 #amber {
@@ -265,7 +273,7 @@ div.tooltip {
 
 
 
-@media only screen and (max-width: 1250px) {
+/* @media only screen and (max-width: 1250px) {
 
     h1 {
         font-size: 1.5em;
@@ -321,4 +329,24 @@ div.tooltip {
     .card {
         width: auto;
     }
-}  
+}   */
+
+@media only screen and (max-width: 950px) {
+    .chart_wrapper {
+        height: 400px;
+    }
+
+    .bar_chart {
+        width: 400px;
+        height: 150px;
+    }
+
+    .bar_chart_top {
+        width: 400px;
+        height: 150px;
+    }
+
+    .arrow {
+        font-size: 20px;
+    }
+}
