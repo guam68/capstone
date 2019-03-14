@@ -211,12 +211,12 @@ def get_dist(deck_list):
         else:
             amber_dist[deck.bonus_amber] = 1
 
-    if None in action_dist:
-        action_dist.pop(None)
-        artifact_dist.pop(None)
-        creature_dist.pop(None)
-        upgrade_dist.pop(None)
-        amber_dist.pop(None)
+    # if None in action_dist:
+    #     action_dist.pop(None)
+    #     artifact_dist.pop(None)
+    #     creature_dist.pop(None)
+    #     upgrade_dist.pop(None)
+    #     amber_dist.pop(None)
 
     return (action_dist, artifact_dist, creature_dist, upgrade_dist, amber_dist)
 

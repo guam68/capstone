@@ -59,8 +59,6 @@ body {
     width: 50%;
     justify-content: center;
     align-items: center;
-    border-style: dashed;
-    border-color: whitesmoke;
 }
 
 .bar_chart_top {
@@ -69,8 +67,6 @@ body {
     width: 50%;
     justify-content: center;
     align-items: center;
-    border-style: dashed;
-    border-color: whitesmoke;
 }
 
 svg .bar_text {
@@ -98,7 +94,7 @@ div.tooltip {
 
 .arrow {
     text-align: center;
-    padding: 200px 20px;
+    padding: 15px;
     font-size: 80px;
 }
 
@@ -273,7 +269,7 @@ div.tooltip {
 
 
 
-/* @media only screen and (max-width: 1250px) {
+@media only screen and (max-width: 1250px) {
 
     h1 {
         font-size: 1.5em;
@@ -329,24 +325,54 @@ div.tooltip {
     .card {
         width: auto;
     }
-}   */
+}  
 
 @media only screen and (max-width: 950px) {
     .chart_wrapper {
-        height: 400px;
+        height: 300px;
     }
 
     .bar_chart {
-        width: 400px;
-        height: 150px;
+        width: 80%;
+        height: 300px;
     }
 
     .bar_chart_top {
-        width: 400px;
-        height: 150px;
+        width: 80%;
+        height: 300px;
+    }
+
+    /* .arrow {
+        font-size: 30px;
+    } */
+
+    svg .bar_text {
+    /* font-size: 24px; */
+    font-weight: bold;
+}
+}
+
+@media only screen and (max-width: 550px) {
+    .chart_wrapper {
+        height: 300px;
+    }
+
+    .bar_chart {
+        width: 80%;
+        height: 300px;
+    }
+
+    .bar_chart_top {
+        width: 80%;
+        height: 300px;
     }
 
     .arrow {
-        font-size: 20px;
+        font-size: 30px;
     }
+
+    svg .bar_text {
+    /* font-size: 24px; */
+    font-weight: bold;
+}
 }
