@@ -2,11 +2,14 @@ body {
     color:whitesmoke;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     margin: 0;
+    overflow-x: hidden;
+    width: 100%;
     background-color: #050e13;
     background-image: url("images/background.png");
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
+
 }
 
 #position_form {
@@ -92,6 +95,14 @@ div.tooltip {
     pointer-events: none;			
 }
 
+#pwr_dist {
+    width: 400px;
+}
+
+#pwr_dist .bar_text {
+    font-size: 16px;
+}
+
 .arrow {
     text-align: center;
     padding: 15px;
@@ -121,7 +132,7 @@ div.tooltip {
 }
 
 #node_details {
-    padding: 40px 0 0 60px;
+    padding: 40px 0 0 0;
     width: 400px;
 }
  
@@ -269,7 +280,7 @@ div.tooltip {
 
 
 
-@media only screen and (max-width: 1250px) {
+@media only screen and (max-width: 1350px) {
 
     h1 {
         font-size: 1.5em;
@@ -283,7 +294,7 @@ div.tooltip {
 
     #deck_search {
         height: 50px;
-        width: 80%;
+        width: 50%;
     }
 
     #deck_search_btn {
@@ -311,7 +322,7 @@ div.tooltip {
 
     #house_cards {
         flex-direction: column;
-        margin: 20px;
+        align-items: center;
     }
 
     #house_cards h1 {
@@ -323,7 +334,7 @@ div.tooltip {
     }
 
     .card {
-        width: auto;
+        /* width: auto; */
     }
 }  
 
@@ -349,10 +360,28 @@ div.tooltip {
     svg .bar_text {
     /* font-size: 24px; */
     font-weight: bold;
-}
+    }
+
+    #node_details {
+        padding: 40px;
+        width: auto;
+    }
+
+    #force {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+        width: auto;
+    }
+
 }
 
 @media only screen and (max-width: 550px) {
+    #deck_search {
+        height: 50px;
+        width: 80%;
+    }
+
     .chart_wrapper {
         height: 300px;
     }
@@ -374,5 +403,18 @@ div.tooltip {
     svg .bar_text {
     /* font-size: 24px; */
     font-weight: bold;
-}
+    }
+
+    #pwr_dist {
+        width: 300px;
+    }
+
+    #house_cards {
+        flex-direction: column;
+        width: auto;
+    }
+
+    .card {
+        width: 80vw;
+    }
 }

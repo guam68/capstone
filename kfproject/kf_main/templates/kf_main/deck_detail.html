@@ -75,7 +75,7 @@
     <div id="house_cards">
       <div class="house" id="house1">
         <div class="house_header"><h1 id="h1_name">{{ house1 }}</h1>
-        <img class="house_img" id="house1_img" width="90px" /></div>
+        <img class="house_img" id="house1_img" width="90px" height="90px" /></div>
         {% for card in deck_card_list %} {% if card.house == house1 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
@@ -86,7 +86,7 @@
 
       <div class="house" id="house2">
         <div class="house_header"><h1 id="h2_name">{{ house2 }}</h1>
-        <img class="house_img" id="house2_img" width="90px" /></div>
+        <img class="house_img" id="house2_img" width="90px" height="90px" /></div>
         {% for card in deck_card_list %} {% if card.house == house2 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
@@ -97,7 +97,7 @@
 
       <div class="house" id="house3">
         <div class="house_header"><h1 id="h3_name">{{ house3 }}</h1>
-        <img class="house_img" id="house3_img" width="90px" /></div>
+        <img class="house_img" id="house3_img" width="90px" height="90px" /></div>
         {% for card in deck_card_list %} {% if card.house == house3 %}
         <div class="card" id="{{ card.id }}" data-value="{{ card.front_image }}">
           {{ card.card_title }}
@@ -313,11 +313,8 @@
 
 
       function generate_barchart(data_list, element_id, deck_amount, title) {
-          console.log(document.querySelector(".bar_chart_top").offsetWidth)
-          let svg_width = document.querySelector(".bar_chart_top").offsetWidth   // percentage of viewport?
-          let svg_height= document.querySelector(".bar_chart_top").offsetHeight  // percentage of viewport?
-          let width = svg_width / 2 // controls height - divide for taller
-          let height = svg_height / 1.3  
+          let width = document.querySelector(".bar_chart_top").offsetWidth  / 2 
+          let height = document.querySelector(".bar_chart_top").offsetHeight  / 1.3  
 
         //   if (window.innerWidth >= 950){
         //     svg_width = 800
@@ -425,7 +422,7 @@
               (nodes[link.target] = {name: link.target, percent: link.percent, win_loss: link.win_loss});
           });
 
-          let width = 600
+          let width = 400
           let height = 400
 
           let force = d3v3.layout.force()
