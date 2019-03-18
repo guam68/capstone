@@ -1,22 +1,14 @@
 from django.shortcuts import render, reverse
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from . import credentials as cred 
 from .models import Card, Deck2, Distribution
-from . import kf_data as kf
 from . import kf_data_v2 as kf2
 from django.db.models import Sum, Q
-from . import deck_processor as dp
-from collections import defaultdict 
 
 import json
-from django.core import serializers
 from django.forms.models import model_to_dict
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils.datastructures import MultiValueDictKeyError
-
-from django.db import connection
-from psycopg2 import connect
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 def index(request):
@@ -34,7 +26,6 @@ def search(request):
         deck_dict[i] = model_to_dict(deck)
 
     page = data['page']
-    # page = request.GET.get('page')
     paginator = Paginator(deck_list, 25)
 
     try:
@@ -60,7 +51,6 @@ def search(request):
 
     context = {
         'house_lists': house_lists,
-        # 'decks': decks,
         'search_str': search_str,
         'page_range': page_range,
         'deck_dict': deck_dict,
@@ -93,11 +83,7 @@ def get_tooltip(request):
 
 
 def deck_detail(request, deck_id):
-    # try:
-        # data = kf2.get_specific_deck(deck_id)
-    # except json.decoder.JSONDecodeError:
     deck = Deck2.objects.get(id=deck_id)        
-    # power_list, type_nums, deck_amber = get_stats(data[1])
     global_dist = model_to_dict(Distribution.objects.get(id=1))
     top_dist = model_to_dict(Distribution.objects.get(id=2))
     g_action, g_artifact, g_creature, g_upgrade, g_amber = global_dist['action'], global_dist['artifact'], global_dist['creature'], global_dist['upgrade'], global_dist['amber']
@@ -110,7 +96,6 @@ def deck_detail(request, deck_id):
     type_nums.append({'type': 'upgrade', 'amount': deck.num_upgrade})
 
     card_objects = [] 
-    # for card_id in data[1]:
     for card_id in deck.card_list:
         card_objects.append(Card.objects.get(id=card_id))
         
@@ -160,7 +145,6 @@ def get_stats(deck_cards):      # list of card ids
         else:
             power_list[card_details.power] = 1
         
-
     type_list = []
     for card_type in type_nums:
         type_list.append({'type': card_type, 'amount': type_nums[card_type]})
@@ -211,12 +195,6 @@ def get_dist(deck_list):
         else:
             amber_dist[deck.bonus_amber] = 1
 
-    # if None in action_dist:
-    #     action_dist.pop(None)
-    #     artifact_dist.pop(None)
-    #     creature_dist.pop(None)
-    #     upgrade_dist.pop(None)
-    #     amber_dist.pop(None)
 
     return (action_dist, artifact_dist, creature_dist, upgrade_dist, amber_dist)
 
@@ -227,7 +205,7 @@ def get_chains():
     total_chains = Deck2.objects.aggregate(Sum('chains'))
     deck_count = Deck2.objects.filter(Q(wins__gt=0) | Q(losses__gt=0)).count()
 
-    return total_chains['chains__sum']/deck_count
+    return total_chains['chains__sum'] / deck_count
 
 
 # Average win/loss ratio for decks with registered games 
@@ -278,7 +256,7 @@ def get_nodes(request):
             if card in deck.card_list:
                 card_count+=1
         
-        percent_match.append([int(card_count/36*100), deck.id, deck.wins, deck.losses])
+        percent_match.append([int(card_count / 36 * 100), deck.id, deck.wins, deck.losses])
 
     percent_match.sort(key=lambda x: x[0], reverse=True)
     percent_match = {'percent_match': percent_match[:26]}
@@ -330,10 +308,10 @@ def get_top100(request):
                         ordered_list.insert(i, deck)
                         break
                     elif deck.chains == top_deck.chains:
-                        if deck.wins/(deck.wins+deck.losses) > top_deck.wins/(top_deck.wins+top_deck.losses):
+                        if deck.wins / (deck.wins + deck.losses) > top_deck.wins / (top_deck.wins+top_deck.losses):
                             ordered_list.insert(i, deck)
                             break
-                        elif deck.wins/(deck.wins+deck.losses) == top_deck.wins/(top_deck.wins+top_deck.losses):
+                        elif deck.wins / (deck.wins + deck.losses) == top_deck.wins / (top_deck.wins+top_deck.losses):
                             if deck.wins > top_deck.wins:
                                 ordered_list.insert(i, deck)
                                 break

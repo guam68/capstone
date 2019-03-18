@@ -4,10 +4,6 @@ import json
 import time
 from time import sleep
 import datetime
-import ast
-from psycopg2 import connect
-import sys
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import logging
 
 from .models import Card, Current_Page, Deck2
@@ -136,7 +132,7 @@ def set_main_data(page, site):
                 Deck2.objects.bulk_create(deck_objs, batch_size=100)
                 Card.objects.bulk_create(card_objs, batch_size=100)
                 
-            except Exception as e:
+            except:
                 Deck2.objects.bulk_create(deck_objs, batch_size=100, ignore_conflicts=True)
                 Card.objects.bulk_create(card_objs, batch_size=100, ignore_conflicts=True)
 

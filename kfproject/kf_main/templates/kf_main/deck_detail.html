@@ -5,29 +5,21 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="HandheldFriendly" content="true" />
+
     <title>Deck Detail</title>
+
     <link rel="icon" href="data:;base64,=" />
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script>
-    <script>
-      d3v4 = d3;
-      window.d3 = null;
-    </script>
+    <script> d3v4 = d3; window.d3 = null; </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
-    <script>
-      d3v3 = d3;
-      window.d3 = null;
-    </script>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{% static 'kf_main/detail_style.css' %}"
-    />
+    <script> d3v3 = d3; window.d3 = null; </script>
+    <link rel="stylesheet" type="text/css" href="{% static 'kf_main/detail_style.css' %}"/>
   </head>
-  <body>
-    <div id="background_div"></div>
 
+  <body>
     {% autoescape off %}
+
     <h1 id="deck_name">{{ deck.name }}</h1>
 
     <form id="position_form" action="{% url 'kf_main:deck_search' %}" method="POST">
@@ -49,10 +41,7 @@
         <div class="hex_top"></div>
         <div class="hex">
           <div id="power">
-            Power:
-            <p>
-              {{ deck.power_level }}
-            </p>
+            Power:<p>{{ deck.power_level }}</p>
           </div>
           <div id="win_loss">
             Wins: {{ deck.wins }}
@@ -110,53 +99,43 @@
     {% endautoescape %}
 
     <div class="chart_wrapper">
-      <div class="arrow" onclick="plusDivs(-1, 'global')">
-        &#10094;
-      </div>
+      <div class="arrow" onclick="plusDivs(-1, 'global')">&#10094;</div>
       <div class="bar_chart" id="g_action"></div>
       <div class="bar_chart" id="g_artifact"></div>
       <div class="bar_chart" id="g_creature"></div>
       <div class="bar_chart" id="g_upgrade"></div>
       <div class="bar_chart" id="g_amber"></div>
-
-      <div class="arrow" onclick="plusDivs(1, 'global')">
-        &#10095;
-      </div>
+      <div class="arrow" onclick="plusDivs(1, 'global')">&#10095;</div>
     </div>
 
     <div class="chart_wrapper">
-      <div class="arrow" onclick="plusDivs(-1, 'top')">
-        &#10094;
-      </div>
+      <div class="arrow" onclick="plusDivs(-1, 'top')">&#10094;</div>
       <div class="bar_chart_top" id="top_action"></div>
       <div class="bar_chart_top" id="top_artifact"></div>
       <div class="bar_chart_top" id="top_creature"></div>
       <div class="bar_chart_top" id="top_upgrade"></div>
       <div class="bar_chart_top" id="top_amber"></div>
-
-      <div class="arrow" onclick="plusDivs(1, 'top')">
-        &#10095;
-      </div>
+      <div class="arrow" onclick="plusDivs(1, 'top')">&#10095;</div>
     </div>
 
     <div id="force_wrapper">
       <div id="force"><div id="node_details"></div></div>
     </div>
 
+
     <script>
-      let slide_idx = 1;
-      let slide_idx_top = 1;
+      let slide_idx = 1
+      let slide_idx_top = 1
 
       style_house()
-      showDivs(slide_idx, "global");
-      showDivs(slide_idx_top, "top");
+      showDivs(slide_idx, "global")
+      showDivs(slide_idx_top, "top")
 
       let type_nums = {{ type_nums|safe }}
       let num_action = type_nums[0]['amount']
       let num_artifact = type_nums[1]['amount']
       let num_creature = type_nums[2]['amount']
       let num_upgrade = type_nums[3]['amount']
-
 
 
       function style_house() {
@@ -207,9 +186,7 @@
           cards.forEach(function(card){
               card.src = "../../static/kf_main/images/"+ card.dataset.value + ".png"
           })
-          
       }
-
 
       {% autoescape off %}
       make_pie({{ type_nums|safe }})
@@ -226,8 +203,9 @@
       generate_barchart({{ top_amber }}, "#top_amber", {{ deck_amber }}, "Amber (Top 100)")
       {% endautoescape %}
 
+// Event listener for card hover img
       let card = document.querySelectorAll(".card")
-      for(let i=0;i<card.length;i++) {
+      for(let i=0; i<card.length; i++) {
           card[i].addEventListener("mouseenter", function() {
               let url = this.dataset.value
               url_str = "url(" + url + ")"
@@ -235,7 +213,7 @@
               card_img.id = "card_img"
               card_img.src = url
               card_img.style.position = "absolute"
-              card_img.style.right = window.innerWidth/2 -170 +"px"
+              card_img.style.right = window.innerWidth / 2 - 170 + "px"
               card[i].appendChild(card_img)
 
           })
@@ -245,7 +223,7 @@
           })
       }
 
-
+// Creating force diagram
       let deck_id = document.querySelector("#deck_id").innerText
       axios.post("{% url 'kf_main:get_nodes' %}", {
               "deck_id": deck_id
@@ -274,7 +252,7 @@
 
           let arc = d3v4.arc()
               .outerRadius(radius)
-              .innerRadius(radius - radius*.3)
+              .innerRadius(radius - radius * .3)
 
           let pie = d3v4.pie()
               .value(function(d){
@@ -307,8 +285,7 @@
               .text(function(d) {
                       return d.data.type
                   })
-              .style("fill", "whitesmoke");
-
+              .style("fill", "whitesmoke")
       }
 
 
@@ -316,47 +293,33 @@
           let width = document.querySelector(".bar_chart_top").offsetWidth  / 2 
           let height = document.querySelector(".bar_chart_top").offsetHeight  / 1.3  
 
-        //   if (window.innerWidth >= 950){
-        //     svg_width = 800
-        //     height = 400
-        //     if(title == "Creature Power"){width=400, svg_width=500} else {width=700}
-        //   } else if (window.innerWidth <= 500){
-        //       svg_width = 200
-        //       width = 100
-        //       height = 100
-        //   }
-
-          let x_pos_start = 0 
-          
           let svg = d3v4.select(element_id).append("svg")
               .attr("height", "100%")
               .attr("width", "100%")
-              .attr('viewBox','0 0 '+width+' '+Math.min(width,height))
+              .attr('viewBox','0 0 ' + width + ' ' + Math.min(width,height))
               .attr('preserveAspectRatio','xMidYMid meet')
 
-          let bar_width = width / Object.values(data_list).length;
+          let bar_width = width / Object.values(data_list).length
           let scale = d3v4.scaleLinear().domain([0, d3v4.max(Object.values(data_list))]).range([0, 200])
 
           let div = d3v4.select("#force").append("div")
               .attr("class", "tooltip")
-              .style("opacity", 0);
+              .style("opacity", 0)
 
           svg.selectAll("rect")
           .data(Object.values(data_list))
           .enter().append("rect")
               .attr("class", "bar")
-              .attr("height", function (d) {return scale(d);})
-              .attr("width", bar_width*.95)
-              .attr("x", function(d, i) {return (i*bar_width) + x_pos_start})
-              .attr("y", function(d, i) {return 250 - scale(d)})
+              .attr("height", function (d) { return scale(d) })
+              .attr("width", bar_width * .95)
+              .attr("x", function(d, i) { return i * bar_width })
+              .attr("y", function(d, i) { return 250 - scale(d) })
 
               .data(Object.keys(data_list))
               .attr("fill", function(d) {
                       if (deck_amount == d){
                           return "red"
-                      } else {
-                          return "blue"
-                      }
+                      } else { return "blue" }
               })
               .data(Object.values(data_list))
               .on("mouseover", function(d) {
@@ -372,38 +335,39 @@
           svg.selectAll("text")
               .data(Object.keys(data_list))
               .enter().append("text")
-              .text(function(d) {return d})
+              .text(function(d) { return d })
                   .attr("class", "bar_text")
-                  .attr("x", function(d, i) {return (i*bar_width)+bar_width/2 + x_pos_start})
+                  .attr("x", function(d, i) { return (i * bar_width) + bar_width / 2 })
                   .attr("y", 250 + 20)
-
 
           svg.append("text")
               .attr("class", "title_text")
-              .attr("transform", "translate(" + width/2 +",25)")
+              .attr("transform", "translate(" + width / 2 + ",25)")
               .attr("font-size", "24px")
               .text(title)
+
 
           function mouseout() {
             div .transition()
                 .duration(200)		
                 .style("opacity", 0)
           }
-
       }
 
 
       function generate_force(closest_decks) {
           let links = []
+          let nodes = {}
+          let width = 400
+          let height = 400
 
-          for (let i=0; i < closest_decks.length; i++) {
+          for (let i=0; i<closest_decks.length; i++) {
               let wins = closest_decks[i][2]
               let losses = closest_decks[i][3]
 
               if (losses != 0){
                   win_loss =  wins / losses
-              }
-              else {win_loss = wins}
+              } else { win_loss = wins }
 
               data_row = {
                   source: closest_decks[0][1],
@@ -411,19 +375,15 @@
                   percent: closest_decks[i][0],
                   win_loss: win_loss
               }
-              links.push(data_row);
+              links.push(data_row)
           }
-          let nodes = {}
 
           links.forEach(function(link) {
           link.source = nodes[link.source] ||
-              (nodes[link.source] = {name: link.source, percent: link.percent, win_loss: link.win_loss});
+              (nodes[link.source] = {name: link.source, percent: link.percent, win_loss: link.win_loss})
           link.target = nodes[link.target] ||
-              (nodes[link.target] = {name: link.target, percent: link.percent, win_loss: link.win_loss});
-          });
-
-          let width = 400
-          let height = 400
+              (nodes[link.target] = {name: link.target, percent: link.percent, win_loss: link.win_loss})
+          })
 
           let force = d3v3.layout.force()
               .nodes(d3v3.values(nodes))
@@ -432,16 +392,16 @@
               .linkDistance(80)
               .charge(-800)
               .on("tick", tick)
-              .start();
+              .start()
 
           let svg = d3v3.select("#force").append("svg")
               .attr("width", width)
-              .attr("height", height);
+              .attr("height", height)
 
           let link = svg.selectAll(".link")
               .data(force.links())
               .enter().append("line")
-              .attr("class", "link");
+              .attr("class", "link")
 
           let node = svg.selectAll(".node")
               .data(force.nodes())
@@ -454,10 +414,10 @@
                         return "#ddca23"
                   } else if (d.win_loss > 0){
                         return "#00cc00"
-                  } else { return "#666666"}
+                  } else { return "#666666" }
               })
-              .attr("percent", function(d) { return d.percent} )
-              .attr("win_loss", function(d) { return d.win_loss} )
+              .attr("percent", function(d) { return d.percent } )
+              .attr("win_loss", function(d) { return d.win_loss } )
               .on("mouseover", mouseover) 
               .on("mouseout", mouseout)
               .on("click", function(d){
@@ -489,26 +449,25 @@
                             }
                                 })
               })
-              .call(force.drag);
+              .call(force.drag)
 
           node.append("circle")
               .attr("r", function(d){
                   if (d.percent == 100) {
                       return 10
-                  } else {
-                      return ((d.percent/45)**7)
-                  }})
+                  } else { return (d.percent / 45)**7 }
+                  })
 
 
           function tick() {
               link
-                  .attr("x1", function(d) { return d.source.x; })
-                  .attr("y1", function(d) { return d.source.y; })
-                  .attr("x2", function(d) { return d.target.x; })
-                  .attr("y2", function(d) { return d.target.y; });
+                  .attr("x1", function(d) { return d.source.x })
+                  .attr("y1", function(d) { return d.source.y })
+                  .attr("x2", function(d) { return d.target.x })
+                  .attr("y2", function(d) { return d.target.y })
 
               node
-                  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")" })
           }
 
 
@@ -520,11 +479,9 @@
                     if (d.percent == 100) {
                         return 10
                     } else if (radius < 15){
-                         return 15 
-                    } else {
-                        return radius + 2
-                    }
-                    });
+                        return 15 
+                    } else { return radius + 2 }
+                    })
             }
 
 
@@ -534,41 +491,40 @@
                 .attr("r", function(d){ 
                     if (d.percent == 100) {
                         return 10
-                    } else {
-                        return ((d.percent/45)**7)
-                    }});
+                    } else { return (d.percent / 45)**7 }
+                    })
             }
-
       }
 
 
       function plusDivs(n, current_div) {
           if (current_div == "global") {
-              showDivs(slide_idx += n, current_div);
+              showDivs(slide_idx += n, current_div)
           } else {
-              showDivs(slide_idx_top += n, current_div);
+              showDivs(slide_idx_top += n, current_div)
           }
       }
 
 
       function showDivs(n, current_div) {
           if (current_div == "global") {
-              let cur_div = document.querySelectorAll(".bar_chart");
-              if (n > cur_div.length) {slide_idx = 1}
-              if (n < 1) {slide_idx = cur_div.length}
-              for (let i = 0; i < cur_div.length; i++) {
-              cur_div[i].style.display = "none";
+              let cur_div = document.querySelectorAll(".bar_chart")
+              if (n > cur_div.length) { slide_idx = 1 }
+              if (n < 1) { slide_idx = cur_div.length }
+              for (let i=0; i<cur_div.length; i++) {
+                cur_div[i].style.display = "none"
               }
-              cur_div[slide_idx-1].style.display = "flex";
+              cur_div[slide_idx - 1].style.display = "flex"
           }
           else {
-              let cur_div = document.querySelectorAll(".bar_chart_top");
-              if (n > cur_div.length) {slide_idx_top = 1}
-              if (n < 1) {slide_idx_top = cur_div.length}
-              for (let i = 0; i < cur_div.length; i++) {
-              cur_div[i].style.display = "none";
+              let cur_div = document.querySelectorAll(".bar_chart_top")
+              if (n > cur_div.length) { slide_idx_top = 1 }
+              if (n < 1) { slide_idx_top = cur_div.length }
+              for (let i=0; i<cur_div.length; i++) {
+                cur_div[i].style.display = "none"
               }
-              cur_div[slide_idx_top-1].style.display = "flex";  }
+              cur_div[slide_idx_top - 1].style.display = "flex" 
+          }
       }
     </script>
   </body>

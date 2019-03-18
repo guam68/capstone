@@ -11,7 +11,6 @@ body {
   background-size: cover;
 }
 
-
 .nav{
   display: flex;
   flex-direction: row;
@@ -22,7 +21,6 @@ body {
 
 .nav .deck_category{
   margin: 0 20px;
-
   background-color: #00000000;
   color: seashell;
   border-width: 2px;
@@ -76,7 +74,6 @@ body {
   flex-direction: column;
   margin: 0;
 }
-
 
 #search_bar_div {
   width: 500px;
@@ -132,7 +129,9 @@ body {
   background-color: #324b52;
 }
 
-.pagination div:hover:not(#active) {background-color: #ddd;}
+.pagination div:hover:not(#active) {
+  background-color: #ddd;
+}
 
 html {
   scroll-behavior: smooth;
@@ -170,7 +169,6 @@ html {
 .house_logo {
   width:90px;
 }
-
 
 
 @media only screen and (max-width: 1250px) {
