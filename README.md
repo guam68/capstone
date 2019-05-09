@@ -7,7 +7,12 @@ Keyforge is a card game designed by Richard Garfield (designer of Magic: The Gat
 
 ## Overview
 
-Unlike the current rating systems, this project aims at viewing a decks "relavance", for lack of a better term, in the current meta as opposed to determining its raw strengths. Decks will be filtered by composition and compared against the top performing decks to find its current likelyhood to be a "meta deck". A visual will also be displayed showing the decks with most similar compositions and the "strength" (as win/loss ratio) of those decks. This may allow players to gain insight on a particular deck composition's potential without even having to play it. Other figures such as global deck statistic comparisions, deck composition breakdown, and other information useful to a user will also be diplayed.
+Unlike the current rating systems, this project aims at viewing a decks "relavance", for lack of a better term, in the current meta as opposed to determining its raw strengths. Decks will be filtered by composition and compared against the top performing decks to find its current likelyhood to be a "meta deck".
+
+#### Note:
+The above was the original intention of the project. After playing for a bit, I became dissatisfied with the way the community treated decks based solely on these rating systems. Although interesting, I decided to move away from that aspect of the project and focus more on card distributions within decks (to include "top" decks).
+
+A visual will also be displayed showing the decks with most similar compositions and the "strength" (as win/loss ratio) of those decks. This may allow players to gain insight on a particular deck composition's potential without even having to play it. Other figures such as global deck statistic comparisions, deck composition breakdown, and other information useful to a user will also be diplayed.
 
 To track decks for competitive play, FFG has implemented a deck registration system that ensures all deck information will be available online. Keyforgegame.com uses an undocumented API to populate its website with that data for global searches and individual deck information. This API will be leveraged to create a database for the project as well as being used for on demand updating to ensure the most relavant data is being shown to the user. 
 
@@ -32,7 +37,6 @@ Once on the deck detail page, the user will be presented with the information an
     - Organized Play games played
     - Chains
 - Graphs of top x% (based on power level and win %) comparisions. Will include all the same categories as global
-- Rating based on composition of deck vs most frequently occuring cards by house within *"meta"* decks (possibly weighted with respect to card rarity?)
 - Visualization of decks most similar in composition
     - Consists of a series of nodes that represent decks
     - Node size will represent the % match in composition
@@ -91,20 +95,6 @@ Once on the deck detail page, the user will be presented with the information an
 
 - [x] Interaction and information for fdg nodes
 - [x] Make site look less ugly
-
-### Post Class
-
-- [ ] Auto data collection
-- [ ] Better search + filters
-- [ ] More prettier
-- [ ] Deploy site
-_________________________
-- [ ] Web scraper for SAS, AERC, and ADHD ratings
-- [ ] API for others to access everything
-_________________________
-- [ ] User login system
-- [ ] User profile page
-- [ ] User saved decks
 
 
 ## Known Issues
